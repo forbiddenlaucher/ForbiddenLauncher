@@ -1,5 +1,6 @@
 const fs = require('fs');
 const path = require('path');
+const AdmZip = require('adm-zip');
 const downloader = require('./downloader');
 const configStore = require('./configStore');
 
@@ -238,7 +239,50 @@ class ManifestManager {
     const files = manifest.files || [];
     const downloadQueue = [];
 
+    // 1. Direct .ZIP package download (MediaFire / GitHub / Google Drive)
+    const downloadZipUrl = manifest.downloadUrl || (manifest.packInfo && manifest.packInfo.downloadUrl);
+    if (downloadZipUrl && downloadZipUrl.startsWith('http') && files.length === 0) {
+      const tempZipPath = path.join(configStore.getBaseDir(), 'cache', `${packId}_bundle.zip`);
+      onProgress({
+        phase: 'sync',
+        message: 'Baixando pacote completo do modpack...',
+        percentage: 10
+      });
+
+      await downloader.downloadFile(downloadZipUrl, tempZipPath, {
+        onProgress: (p) => {
+          onProgress({
+            phase: 'sync',
+            message: `Baixando pacote do modpack (${(p.receivedBytes / (1024 * 1024)).toFixed(1)} MB)...`,
+            percentage: p.totalBytes > 0 ? (p.receivedBytes / p.totalBytes) * 100 : 50,
+            downloadedBytes: p.receivedBytes,
+            totalBytes: p.totalBytes,
+            speedBytesPerSec: p.speedBytesPerSec
+          });
+        }
+      });
+
+      onProgress({
+        phase: 'sync',
+        message: 'Extraindo arquivos do modpack...',
+        percentage: 90
+      });
+
+      try {
+        const zip = new AdmZip(tempZipPath);
+        zip.extractAllTo(gameDir, true);
+      } catch (err) {
+        console.error('Erro ao descompactar zip do modpack:', err);
+      } finally {
+        if (fs.existsSync(tempZipPath)) {
+          try { fs.unlinkSync(tempZipPath); } catch (e) {}
+        }
+      }
+    }
+
+    // 2. Individual file synchronization (Incremental mods update)
     for (const file of files) {
+      if (!file.url) continue;
       const dest = path.join(gameDir, file.path);
       let needsDownload = true;
 
