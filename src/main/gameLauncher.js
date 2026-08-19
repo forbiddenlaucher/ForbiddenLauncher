@@ -193,67 +193,89 @@ class GameLauncher {
     const assetsDir = path.join(gameDir, 'assets');
     const pathSeparator = process.platform === 'win32' ? ';' : ':';
 
-    // 3. Resolve mainClass, JVM args and Game args from version JSON
+    // 3. Resolve Version Hierarchy Chain (e.g. [neoforge-21.1.235, 1.21.1])
+    const loadVersionHierarchy = (verId) => {
+      const chain = [];
+      let currentId = verId;
+      while (currentId) {
+        const vPath = path.join(gameDir, 'versions', currentId, `${currentId}.json`);
+        if (fs.existsSync(vPath)) {
+          try {
+            const vData = JSON.parse(fs.readFileSync(vPath, 'utf8'));
+            chain.push(vData);
+            currentId = vData.inheritsFrom || (currentId !== mcVersion ? mcVersion : null);
+            if (chain.length > 5) break;
+          } catch (e) {
+            break;
+          }
+        } else {
+          if (currentId !== mcVersion) currentId = mcVersion;
+          else break;
+        }
+      }
+      return chain;
+    };
+
+    const versionChain = loadVersionHierarchy(activeVersionId);
+
     let mainClass = mcVersion === '1.7.10' ? 'net.minecraft.launchwrapper.Launch' : 'net.minecraft.client.main.Main';
     let assetIndexName = mcVersion === '1.7.10' ? '1.7.10' : '17';
     let extraJvmArgs = [];
-    let extraGameArgs = [];
     let moduleJarsList = [];
-    const uuid = this.generateOfflineUuid(username);
+    let rawGameArgs = [];
+    let legacyMinecraftArgs = '';
 
-    const versionJsonPath = path.join(versionsDir, `${activeVersionId}.json`);
-    if (fs.existsSync(versionJsonPath)) {
-      try {
-        const vJson = JSON.parse(fs.readFileSync(versionJsonPath, 'utf8'));
-        if (vJson.mainClass) mainClass = vJson.mainClass;
-        if (vJson.assets) assetIndexName = vJson.assets;
-        else if (vJson.assetIndex && vJson.assetIndex.id) assetIndexName = vJson.assetIndex.id;
+    for (const vJson of versionChain) {
+      if (vJson.mainClass && !mainClass) mainClass = vJson.mainClass;
+      if (vJson.assets) assetIndexName = vJson.assets;
+      else if (vJson.assetIndex && vJson.assetIndex.id) assetIndexName = vJson.assetIndex.id;
 
-        // Parse arguments.jvm from version JSON
-        if (vJson.arguments && Array.isArray(vJson.arguments.jvm)) {
-          for (let i = 0; i < vJson.arguments.jvm.length; i++) {
-            const arg = vJson.arguments.jvm[i];
-            if (typeof arg === 'string') {
-              let replaced = arg
-                .replace(/\$\{library_directory\}/g, librariesDir)
-                .replace(/\$\{classpath_separator\}/g, pathSeparator)
-                .replace(/\$\{natives_directory\}/g, nativesDir)
-                .replace(/\$\{version_name\}/g, activeVersionId);
+      if (vJson.minecraftArguments) {
+        legacyMinecraftArgs = vJson.minecraftArguments;
+      }
+    }
 
-              // Detect module path (-p) entries
-              if (arg === '-p' && i + 1 < vJson.arguments.jvm.length) {
-                const nextVal = vJson.arguments.jvm[i + 1];
-                if (typeof nextVal === 'string') {
-                  const modStr = nextVal.replace(/\$\{library_directory\}/g, librariesDir).replace(/\$\{classpath_separator\}/g, pathSeparator);
-                  moduleJarsList = modStr.split(pathSeparator);
-                }
+    // Top-level version overrides mainClass if set
+    if (versionChain.length > 0 && versionChain[0].mainClass) {
+      mainClass = versionChain[0].mainClass;
+    }
+
+    // Parse JVM Arguments from hierarchy (top-down)
+    for (const vJson of versionChain) {
+      if (vJson.arguments && Array.isArray(vJson.arguments.jvm)) {
+        for (let i = 0; i < vJson.arguments.jvm.length; i++) {
+          const arg = vJson.arguments.jvm[i];
+          if (typeof arg === 'string') {
+            let replaced = arg
+              .replace(/\$\{library_directory\}/g, librariesDir)
+              .replace(/\$\{classpath_separator\}/g, pathSeparator)
+              .replace(/\$\{natives_directory\}/g, nativesDir)
+              .replace(/\$\{version_name\}/g, activeVersionId);
+
+            // Detect module path (-p) entries
+            if (arg === '-p' && i + 1 < vJson.arguments.jvm.length) {
+              const nextVal = vJson.arguments.jvm[i + 1];
+              if (typeof nextVal === 'string') {
+                const modStr = nextVal.replace(/\$\{library_directory\}/g, librariesDir).replace(/\$\{classpath_separator\}/g, pathSeparator);
+                moduleJarsList = modStr.split(pathSeparator);
               }
-
-              extraJvmArgs.push(replaced);
             }
+
+            extraJvmArgs.push(replaced);
           }
         }
+      }
+    }
 
-        // Parse arguments.game from version JSON
-        if (vJson.arguments && Array.isArray(vJson.arguments.game)) {
-          for (const arg of vJson.arguments.game) {
-            if (typeof arg === 'string') {
-              let replaced = arg
-                .replace(/\$\{auth_player_name\}/g, username)
-                .replace(/\$\{version_name\}/g, activeVersionId)
-                .replace(/\$\{game_directory\}/g, gameDir)
-                .replace(/\$\{assets_root\}/g, assetsDir)
-                .replace(/\$\{assets_index_name\}/g, assetIndexName)
-                .replace(/\$\{auth_uuid\}/g, uuid)
-                .replace(/\$\{auth_access_token\}/g, '00000000000000000000000000000000')
-                .replace(/\$\{user_type\}/g, 'legacy')
-                .replace(/\$\{version_type\}/g, 'release');
-              extraGameArgs.push(replaced);
-            }
+    // Parse Game Arguments from hierarchy (base version first, then loader version)
+    for (let i = versionChain.length - 1; i >= 0; i--) {
+      const vJson = versionChain[i];
+      if (vJson.arguments && Array.isArray(vJson.arguments.game)) {
+        for (const arg of vJson.arguments.game) {
+          if (typeof arg === 'string') {
+            rawGameArgs.push(arg);
           }
         }
-      } catch (e) {
-        console.error('Erro lendo version JSON:', e);
       }
     }
 
@@ -292,9 +314,10 @@ class GameLauncher {
       jvmArguments.push(mainClass);
     }
 
-    // 4. Resolve Template Variables for Version Arguments
+    // 5. Resolve Template Variables for Version Arguments
     const authType = configStore.get('authType') || 'offline';
     const msAccount = configStore.get('microsoftAccount');
+    const uuid = this.generateOfflineUuid(username);
 
     let finalUsername = username;
     let finalUuid = uuid;
@@ -316,51 +339,57 @@ class GameLauncher {
       '${version_name}': activeVersionId,
       '${game_directory}': gameDir,
       '${assets_root}': assetsDir,
+      '${game_assets}': assetsDir,
       '${assets_index_name}': assetIndexName,
       '${auth_uuid}': finalUuid,
       '${auth_access_token}': finalAccessToken,
+      '${auth_session}': finalAccessToken,
       '${clientid}': '0',
       '${auth_xuid}': '0',
       '${user_type}': userType,
+      '${user_properties}': '{}',
       '${version_type}': 'release',
       '${natives_directory}': nativesDir,
       '${launcher_name}': 'ForbiddenLauncher',
-      '${launcher_version}': '1.0.0',
+      '${launcher_version}': '1.0.3',
       '${classpath}': classPath,
       '${library_directory}': librariesDir,
       '${classpath_separator}': pathSeparator
     };
 
-    // 5. Game Arguments
+    // 6. Assemble Game Arguments
     const gameArguments = [];
-    try {
-      const vJson = JSON.parse(fs.readFileSync(versionJsonPath, 'utf8'));
-      if (vJson.arguments && Array.isArray(vJson.arguments.game)) {
-        for (const arg of vJson.arguments.game) {
-          if (typeof arg === 'string') {
-            let replaced = arg;
-            for (const [key, val] of Object.entries(templateVars)) {
-              replaced = replaced.split(key).join(val);
-            }
-            gameArguments.push(replaced);
-          }
+    if (rawGameArgs.length > 0) {
+      for (const arg of rawGameArgs) {
+        let replaced = arg;
+        for (const [key, val] of Object.entries(templateVars)) {
+          replaced = replaced.split(key).join(val);
         }
-      } else {
-        // Fallback for older versions
-        gameArguments.push(
-          '--username', finalUsername,
-          '--version', activeVersionId,
-          '--gameDir', gameDir,
-          '--assetsDir', assetsDir,
-          '--assetIndex', assetIndexName,
-          '--uuid', finalUuid,
-          '--accessToken', finalAccessToken,
-          '--userType', userType
-        );
+        gameArguments.push(replaced);
       }
-    } catch (e) {}
+    } else if (legacyMinecraftArgs) {
+      // Legacy minecraftArguments string (Forge 1.7.10)
+      let replaced = legacyMinecraftArgs;
+      for (const [key, val] of Object.entries(templateVars)) {
+        replaced = replaced.split(key).join(val);
+      }
+      gameArguments.push(...replaced.split(/\s+/).filter(a => a.length > 0));
+    } else {
+      // Direct Fallback
+      gameArguments.push(
+        '--username', finalUsername,
+        '--version', activeVersionId,
+        '--gameDir', gameDir,
+        '--assetsDir', assetsDir,
+        '--assetIndex', assetIndexName,
+        '--uuid', finalUuid,
+        '--accessToken', finalAccessToken,
+        '--userType', userType,
+        '--versionType', 'release'
+      );
+    }
 
-    if (mcVersion === '1.7.10') {
+    if (mcVersion === '1.7.10' && !gameArguments.includes('--tweakClass')) {
       gameArguments.push('--tweakClass', 'cpw.mods.fml.common.launcher.FMLTweaker');
     }
 
