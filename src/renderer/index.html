@@ -91,6 +91,18 @@
 
     <!-- Main Viewport Content -->
     <main class="content-viewport">
+      <!-- Launcher Update Alert Banner -->
+      <div id="launcher-update-banner" style="display: none; background: linear-gradient(90deg, #1e3a8a 0%, #0f172a 100%); border-bottom: 2px solid #3b82f6; padding: 10px 20px; align-items: center; justify-content: space-between; z-index: 1000; box-shadow: 0 4px 25px rgba(0,0,0,0.8); animation: slideDown 0.3s ease;">
+        <div style="display:flex; align-items:center; gap:12px; font-size:12px; font-weight:700; color:#93c5fd;">
+          <span style="font-size:18px;">⚡</span>
+          <span>NOVA ATUALIZAÇÃO DO LAUNCHER DISPONÍVEL: <b id="banner-update-version" style="color:#60a5fa; font-family:var(--font-mono); font-size:13px;">v1.0.2</b></span>
+        </div>
+        <div style="display:flex; align-items:center; gap:12px;">
+          <button id="btn-banner-update" class="btn-secondary" style="background:#2563eb; border-color:#60a5fa; color:#fff; padding:6px 16px; font-size:11px; font-weight:700; cursor:pointer; box-shadow: 0 0 15px rgba(37,99,235,0.6);">BAIXAR ATUALIZAÇÃO</button>
+          <button id="btn-banner-close" style="background:none; border:none; color:#94a3b8; cursor:pointer; font-size:18px; padding:0 4px; line-height:1;">✕</button>
+        </div>
+      </div>
+
       <!-- VIEW 1: UNIVERSO / HUB (DUAL SPLIT CARDS) -->
       <section class="view-section active" id="view-home">
         <div class="hub-container">
@@ -542,6 +554,29 @@
                     Abrir Pasta
                   </button>
                 </div>
+              </div>
+            </div>
+
+            <!-- CARD 7: Sobre o Launcher & Atualizações -->
+            <div class="settings-card card-about-launcher" style="grid-column: span 2;">
+              <div class="settings-card-header">
+                <span class="settings-card-tag" style="color: #60a5fa; border-color: rgba(96,165,250,0.3); background: rgba(96,165,250,0.1);">SISTEMA</span>
+                <h3 class="settings-card-title" style="color: #93c5fd;">Sobre o Forbidden Launcher & Atualizações</h3>
+              </div>
+              <div style="display: flex; justify-content: space-between; align-items: center; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); padding: 14px 18px; border-radius: 6px;">
+                <div>
+                  <div style="font-size: 13px; font-weight: 700; color: #fff; display: flex; align-items: center; gap: 8px;">
+                    <span>⚔️ Forbidden Requiem Launcher</span>
+                    <span style="font-size: 11px; padding: 2px 8px; border-radius: 10px; background: rgba(96,165,250,0.15); color: #60a5fa; font-family: var(--font-mono); font-weight: 700;" id="settings-launcher-version">v1.0.1</span>
+                  </div>
+                  <div style="font-size: 11px; color: var(--text-muted); margin-top: 4px;" id="settings-updater-feedback">
+                    Conectado ao repositório oficial no GitHub.
+                  </div>
+                </div>
+                <button class="btn-secondary" id="btn-manual-check-update" style="border-color: #3b82f6; color: #93c5fd;">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/></svg>
+                  <span>Checar Atualizações Agora</span>
+                </button>
               </div>
             </div>
           </div>

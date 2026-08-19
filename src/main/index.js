@@ -118,19 +118,34 @@ function createWindow() {
   registerIpcHandlers(mainWindow);
 }
 
-app.whenReady().then(() => {
-  createTray();
-  createWindow();
+// Single Instance Lock (Prevents running multiple instances of the launcher)
+const gotTheLock = app.requestSingleInstanceLock();
 
-  app.on('activate', () => {
-    if (BrowserWindow.getAllWindows().length === 0) {
-      createWindow();
+if (!gotTheLock) {
+  app.quit();
+} else {
+  app.on('second-instance', (event, commandLine, workingDirectory) => {
+    if (mainWindow) {
+      if (mainWindow.isMinimized()) mainWindow.restore();
+      if (!mainWindow.isVisible()) mainWindow.show();
+      mainWindow.focus();
     }
   });
-});
 
-app.on('window-all-closed', () => {
-  if (process.platform !== 'darwin' && (!configStore.get('closeToTray') || app.isQuitting)) {
-    app.quit();
-  }
-});
+  app.whenReady().then(() => {
+    createTray();
+    createWindow();
+
+    app.on('activate', () => {
+      if (BrowserWindow.getAllWindows().length === 0) {
+        createWindow();
+      }
+    });
+  });
+
+  app.on('window-all-closed', () => {
+    if (process.platform !== 'darwin' && (!configStore.get('closeToTray') || app.isQuitting)) {
+      app.quit();
+    }
+  });
+}

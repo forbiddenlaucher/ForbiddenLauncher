@@ -228,37 +228,66 @@ document.addEventListener('DOMContentLoaded', async () => {
     checkForLauncherUpdate();
   }
 
-  async function checkForLauncherUpdate() {
+  // --- Launcher Updater ---
+  const launcherUpdateBanner = document.getElementById('launcher-update-banner');
+  const bannerUpdateVersion = document.getElementById('banner-update-version');
+  const btnBannerUpdate = document.getElementById('btn-banner-update');
+  const btnBannerClose = document.getElementById('btn-banner-close');
+  const settingsLauncherVersion = document.getElementById('settings-launcher-version');
+  const settingsUpdaterFeedback = document.getElementById('settings-updater-feedback');
+  const btnManualCheckUpdate = document.getElementById('btn-manual-check-update');
+
+  async function checkForLauncherUpdate(isManual = false) {
     try {
+      if (isManual && btnManualCheckUpdate) {
+        btnManualCheckUpdate.innerHTML = '<span>Checando no GitHub...</span>';
+        btnManualCheckUpdate.disabled = true;
+      }
+
       const updateInfo = await api.checkForLauncherUpdates();
+
+      if (settingsLauncherVersion && updateInfo && updateInfo.currentVersion) {
+        settingsLauncherVersion.textContent = `v${updateInfo.currentVersion}`;
+      }
+
       if (updateInfo && updateInfo.updateAvailable) {
         appendLog('INFO', `Nova versão do Forbidden Launcher disponível: v${updateInfo.latestVersion}`);
-        let banner = document.getElementById('launcher-update-banner');
-        if (!banner) {
-          banner = document.createElement('div');
-          banner.id = 'launcher-update-banner';
-          banner.style.cssText = 'position: fixed; top: 38px; left: 240px; right: 0; background: linear-gradient(90deg, rgba(30, 58, 138, 0.95) 0%, rgba(30, 27, 75, 0.95) 100%); border-bottom: 1px solid #3b82f6; padding: 8px 16px; display: flex; align-items: center; justify-content: space-between; z-index: 1000; box-shadow: 0 4px 20px rgba(0,0,0,0.6); backdrop-filter: blur(8px);';
-          banner.innerHTML = `
-            <div style="display:flex; align-items:center; gap:8px; font-size:12px; font-weight:600; color:#93c5fd;">
-              <span>⚡</span>
-              <span>Uma nova versão do Launcher está disponível: <b>v${updateInfo.latestVersion}</b>!</span>
-            </div>
-            <div style="display:flex; align-items:center; gap:8px;">
-              <button id="btn-banner-update" class="btn-secondary" style="background:#2563eb; border-color:#60a5fa; color:#fff; padding:3px 12px; font-size:11px; cursor:pointer;">Baixar Atualização</button>
-              <button id="btn-banner-close" style="background:none; border:none; color:#94a3b8; cursor:pointer; font-size:14px; padding:0 4px;">✕</button>
-            </div>
-          `;
-          document.body.appendChild(banner);
+        if (launcherUpdateBanner) {
+          launcherUpdateBanner.style.display = 'flex';
+          if (bannerUpdateVersion) bannerUpdateVersion.textContent = `v${updateInfo.latestVersion}`;
+          if (btnBannerUpdate) {
+            btnBannerUpdate.onclick = () => api.openDownloadPage(updateInfo.downloadUrl);
+          }
+          if (btnBannerClose) {
+            btnBannerClose.onclick = () => { launcherUpdateBanner.style.display = 'none'; };
+          }
+        }
 
-          document.getElementById('btn-banner-update').onclick = () => {
-            api.openDownloadPage(updateInfo.downloadUrl);
-          };
-          document.getElementById('btn-banner-close').onclick = () => {
-            banner.remove();
-          };
+        if (settingsUpdaterFeedback) {
+          settingsUpdaterFeedback.textContent = `⚡ Nova versão disponível no GitHub: v${updateInfo.latestVersion}!`;
+          settingsUpdaterFeedback.style.color = '#60a5fa';
+        }
+      } else {
+        if (isManual && settingsUpdaterFeedback) {
+          settingsUpdaterFeedback.textContent = `✅ Seu launcher já está na versão mais recente (v${updateInfo.currentVersion || '1.0.2'}).`;
+          settingsUpdaterFeedback.style.color = '#4ade80';
         }
       }
-    } catch (e) {}
+    } catch (e) {
+      if (isManual && settingsUpdaterFeedback) {
+        settingsUpdaterFeedback.textContent = `Erro ao checar atualizações: ${e.message}`;
+        settingsUpdaterFeedback.style.color = '#f87171';
+      }
+    } finally {
+      if (isManual && btnManualCheckUpdate) {
+        btnManualCheckUpdate.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/></svg><span>Checar Atualizações Agora</span>`;
+        btnManualCheckUpdate.disabled = false;
+      }
+    }
+  }
+
+  if (btnManualCheckUpdate) {
+    btnManualCheckUpdate.addEventListener('click', () => checkForLauncherUpdate(true));
   }
 
   // Check instance status
