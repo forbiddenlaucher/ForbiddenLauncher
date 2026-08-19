@@ -281,6 +281,12 @@ function registerIpcHandlers(mainWindow) {
     return await launcherUpdater.checkForUpdates();
   });
 
+  ipcMain.handle('updater:install', async (event, url) => {
+    return await launcherUpdater.downloadAndInstallUpdate(url, (progress) => {
+      sendToWindow('updater:progress', progress);
+    });
+  });
+
   ipcMain.handle('updater:open-download', (event, url) => {
     launcherUpdater.openDownloadPage(url);
   });

@@ -26,7 +26,13 @@ contextBridge.exposeInMainWorld('launcherAPI', {
 
   // Launcher Updater
   checkForLauncherUpdates: () => ipcRenderer.invoke('updater:check'),
+  installLauncherUpdate: (url) => ipcRenderer.invoke('updater:install', url),
   openDownloadPage: (url) => ipcRenderer.invoke('updater:open-download', url),
+  onUpdaterProgress: (callback) => {
+    const handler = (event, data) => callback(data);
+    ipcRenderer.on('updater:progress', handler);
+    return () => ipcRenderer.removeListener('updater:progress', handler);
+  },
 
   // Window Controls
   minimizeWindow: () => ipcRenderer.send('window:minimize'),

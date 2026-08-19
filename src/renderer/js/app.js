@@ -269,7 +269,24 @@ document.addEventListener('DOMContentLoaded', async () => {
           launcherUpdateBanner.style.display = 'flex';
           if (bannerUpdateVersion) bannerUpdateVersion.textContent = `v${updateInfo.latestVersion}`;
           if (btnBannerUpdate) {
-            btnBannerUpdate.onclick = () => api.openDownloadPage(updateInfo.downloadUrl);
+            btnBannerUpdate.onclick = async () => {
+              btnBannerUpdate.textContent = 'Baixando 0%...';
+              btnBannerUpdate.disabled = true;
+
+              const removeListener = api.onUpdaterProgress((progress) => {
+                btnBannerUpdate.textContent = `Baixando ${Math.round(progress.percentage)}%...`;
+              });
+
+              try {
+                await api.installLauncherUpdate(updateInfo.downloadUrl);
+              } catch (err) {
+                removeListener();
+                btnBannerUpdate.disabled = false;
+                btnBannerUpdate.textContent = 'BAIXAR ATUALIZAÇÃO';
+                // Fallback to opening download page in browser
+                api.openDownloadPage(updateInfo.downloadUrl);
+              }
+            };
           }
           if (btnBannerClose) {
             btnBannerClose.onclick = () => { launcherUpdateBanner.style.display = 'none'; };

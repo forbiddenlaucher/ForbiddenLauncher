@@ -1,14 +1,17 @@
 const { app, shell } = require('electron');
 const https = require('https');
+const fs = require('fs');
+const path = require('path');
+const { spawn } = require('child_process');
 
 // Default GitHub repository for launcher releases
 const DEFAULT_REPO = 'forbiddenlaucher/ForbiddenLauncher';
 
-function httpsGet(path) {
+function httpsGet(apiPath) {
   return new Promise((resolve) => {
     const options = {
       hostname: 'api.github.com',
-      path: path,
+      path: apiPath,
       method: 'GET',
       headers: {
         'User-Agent': 'ForbiddenLauncher-Updater',
@@ -85,7 +88,6 @@ class LauncherUpdater {
       // 2. Fallback to Tags API (if no formal release is created yet)
       const tagsRes = await httpsGet(`/repos/${this.repo}/tags?per_page=10`);
       if (tagsRes.ok && Array.isArray(tagsRes.data) && tagsRes.data.length > 0) {
-        // Find highest semver tag
         let highestTag = null;
         for (const t of tagsRes.data) {
           const clean = (t.name || '').replace(/^v/, '');
@@ -111,6 +113,68 @@ class LauncherUpdater {
     } catch (err) {
       return { updateAvailable: false, error: err.message, currentVersion: this.currentVersion };
     }
+  }
+
+  /**
+   * Downloads the new .exe installer and runs it automatically
+   */
+  downloadAndInstallUpdate(downloadUrl, onProgress) {
+    return new Promise((resolve, reject) => {
+      const tempDir = (app && app.getPath) ? app.getPath('temp') : (process.env.TEMP || '.');
+      const installerPath = path.join(tempDir, 'ForbiddenLauncherSetup_Update.exe');
+      const fileStream = fs.createWriteStream(installerPath);
+
+      function download(targetUrl) {
+        https.get(targetUrl, (res) => {
+          // Follow redirects (GitHub to AWS S3)
+          if (res.statusCode === 301 || res.statusCode === 302 || res.statusCode === 307) {
+            return download(res.headers.location);
+          }
+
+          if (res.statusCode !== 200) {
+            return reject(new Error(`Falha no download da atualização: HTTP ${res.statusCode}`));
+          }
+
+          const totalBytes = parseInt(res.headers['content-length'] || '0', 10);
+          let downloadedBytes = 0;
+
+          res.on('data', (chunk) => {
+            downloadedBytes += chunk.length;
+            if (totalBytes > 0 && onProgress) {
+              onProgress({
+                percentage: (downloadedBytes / totalBytes) * 100,
+                downloaded: downloadedBytes,
+                total: totalBytes
+              });
+            }
+          });
+
+          res.pipe(fileStream);
+
+          fileStream.on('finish', () => {
+            fileStream.close(() => {
+              try {
+                // Execute new installer detached and quit current app
+                spawn(installerPath, [], { detached: true, stdio: 'ignore' }).unref();
+                if (app) {
+                  app.isQuitting = true;
+                  app.quit();
+                }
+                resolve(true);
+              } catch (e) {
+                shell.openPath(installerPath);
+                resolve(true);
+              }
+            });
+          });
+        }).on('error', (err) => {
+          fs.unlink(installerPath, () => {});
+          reject(err);
+        });
+      }
+
+      download(downloadUrl);
+    });
   }
 
   /**
