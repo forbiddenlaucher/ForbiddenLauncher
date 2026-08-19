@@ -108,6 +108,19 @@ document.addEventListener('DOMContentLoaded', async () => {
   const msPlayerName = document.getElementById('ms-player-name');
   const msPlayerUuid = document.getElementById('ms-player-uuid');
 
+  function appendLog(level, message, packId = '') {
+    const time = new Date().toLocaleTimeString();
+    const tag = packId ? `[${packId.toUpperCase()}] ` : '';
+    const line = document.createElement('div');
+    line.className = `log-line log-tag-${level || 'INFO'}`;
+    line.textContent = `[${time}] ${tag}[${level || 'INFO'}] ${message}`;
+    if (consoleLogsContainer) {
+      consoleLogsContainer.appendChild(line);
+      consoleLogsContainer.scrollTop = consoleLogsContainer.scrollHeight;
+    }
+    logsBuffer.push(line.textContent);
+  }
+
   function updateInstanceButtonUI(packId, state) {
     instanceStates[packId] = state;
     const isFr = packId === 'forbidden-requiem';
