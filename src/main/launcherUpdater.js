@@ -4,10 +4,47 @@ const https = require('https');
 // Default GitHub repository for launcher releases
 const DEFAULT_REPO = 'forbiddenlaucher/ForbiddenLauncher';
 
+function httpsGet(path) {
+  return new Promise((resolve) => {
+    const options = {
+      hostname: 'api.github.com',
+      path: path,
+      method: 'GET',
+      headers: {
+        'User-Agent': 'ForbiddenLauncher-Updater',
+        'Accept': 'application/vnd.github.v3+json'
+      }
+    };
+
+    const req = https.request(options, (res) => {
+      let data = '';
+      res.on('data', chunk => data += chunk);
+      res.on('end', () => {
+        try {
+          if (res.statusCode >= 200 && res.statusCode < 300) {
+            resolve({ ok: true, data: JSON.parse(data) });
+          } else {
+            resolve({ ok: false, status: res.statusCode });
+          }
+        } catch (e) {
+          resolve({ ok: false, error: e.message });
+        }
+      });
+    });
+
+    req.on('error', (err) => resolve({ ok: false, error: err.message }));
+    req.setTimeout(6000, () => {
+      req.destroy();
+      resolve({ ok: false, error: 'Timeout' });
+    });
+    req.end();
+  });
+}
+
 class LauncherUpdater {
   constructor() {
     this.repo = DEFAULT_REPO;
-    this.currentVersion = app.isPackaged ? app.getVersion() : require('../../package.json').version;
+    this.currentVersion = (app && app.isPackaged) ? app.getVersion() : require('../../package.json').version;
   }
 
   setRepository(repoFullName) {
@@ -15,70 +52,65 @@ class LauncherUpdater {
   }
 
   /**
-   * Checks GitHub Releases API for new launcher versions
+   * Checks GitHub Releases and GitHub Tags for new launcher versions
    */
   async checkForUpdates() {
-    return new Promise((resolve) => {
-      const options = {
-        hostname: 'api.github.com',
-        path: `/repos/${this.repo}/releases/latest`,
-        method: 'GET',
-        headers: {
-          'User-Agent': `ForbiddenLauncher/${this.currentVersion}`,
-          'Accept': 'application/vnd.github.v3+json'
+    try {
+      this.currentVersion = (app && app.isPackaged) ? app.getVersion() : require('../../package.json').version;
+      const currentClean = (this.currentVersion || '1.0.0').replace(/^v/, '');
+
+      // 1. Try Releases API
+      const releaseRes = await httpsGet(`/repos/${this.repo}/releases/latest`);
+      if (releaseRes.ok && releaseRes.data) {
+        const release = releaseRes.data;
+        const latestTag = (release.tag_name || '').replace(/^v/, '');
+        const isNewer = this.compareVersions(latestTag, currentClean) > 0;
+
+        let downloadUrl = release.html_url || `https://github.com/${this.repo}/releases`;
+        if (Array.isArray(release.assets)) {
+          const exeAsset = release.assets.find(a => a.name.endsWith('.exe'));
+          if (exeAsset) downloadUrl = exeAsset.browser_download_url;
         }
-      };
 
-      const req = https.request(options, (res) => {
-        let data = '';
-        res.on('data', chunk => data += chunk);
-        res.on('end', () => {
-          try {
-            if (res.statusCode === 200) {
-              const release = JSON.parse(data);
-              const latestTag = (release.tag_name || '').replace(/^v/, '');
-              const currentClean = this.currentVersion.replace(/^v/, '');
+        return {
+          updateAvailable: isNewer,
+          currentVersion: this.currentVersion,
+          latestVersion: latestTag,
+          releaseName: release.name || `Versão ${latestTag}`,
+          releaseNotes: release.body || '',
+          downloadUrl: downloadUrl
+        };
+      }
 
-              const isNewer = this.compareVersions(latestTag, currentClean) > 0;
-
-              // Find .exe asset if available
-              let downloadUrl = release.html_url;
-              if (Array.isArray(release.assets)) {
-                const exeAsset = release.assets.find(a => a.name.endsWith('.exe'));
-                if (exeAsset) {
-                  downloadUrl = exeAsset.browser_download_url;
-                }
-              }
-
-              resolve({
-                updateAvailable: isNewer,
-                currentVersion: this.currentVersion,
-                latestVersion: latestTag,
-                releaseName: release.name || `Versão ${latestTag}`,
-                releaseNotes: release.body || '',
-                downloadUrl: downloadUrl,
-                publishedAt: release.published_at
-              });
-            } else {
-              resolve({ updateAvailable: false, currentVersion: this.currentVersion });
-            }
-          } catch (e) {
-            resolve({ updateAvailable: false, error: e.message, currentVersion: this.currentVersion });
+      // 2. Fallback to Tags API (if no formal release is created yet)
+      const tagsRes = await httpsGet(`/repos/${this.repo}/tags?per_page=10`);
+      if (tagsRes.ok && Array.isArray(tagsRes.data) && tagsRes.data.length > 0) {
+        // Find highest semver tag
+        let highestTag = null;
+        for (const t of tagsRes.data) {
+          const clean = (t.name || '').replace(/^v/, '');
+          if (!highestTag || this.compareVersions(clean, highestTag) > 0) {
+            highestTag = clean;
           }
-        });
-      });
+        }
 
-      req.on('error', (err) => {
-        resolve({ updateAvailable: false, error: err.message, currentVersion: this.currentVersion });
-      });
+        if (highestTag) {
+          const isNewer = this.compareVersions(highestTag, currentClean) > 0;
+          return {
+            updateAvailable: isNewer,
+            currentVersion: this.currentVersion,
+            latestVersion: highestTag,
+            releaseName: `Nova Versão v${highestTag}`,
+            releaseNotes: 'Melhorias de desempenho e novas funcionalidades.',
+            downloadUrl: `https://github.com/${this.repo}/releases`
+          };
+        }
+      }
 
-      req.setTimeout(5000, () => {
-        req.destroy();
-        resolve({ updateAvailable: false, error: 'Timeout ao checar atualizações', currentVersion: this.currentVersion });
-      });
-
-      req.end();
-    });
+      return { updateAvailable: false, currentVersion: this.currentVersion };
+    } catch (err) {
+      return { updateAvailable: false, error: err.message, currentVersion: this.currentVersion };
+    }
   }
 
   /**
