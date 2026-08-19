@@ -1,50 +1,58 @@
 const fs = require('fs');
 const path = require('path');
+const zlib = require('zlib');
 
-// Simple script to generate a 32x32 RGBA PNG icon with a gothic 'F' symbol for the Tray
-function generateTrayPng() {
-  const zlib = require('zlib');
-  const width = 32;
-  const height = 32;
+function generateHighResIcon() {
+  const width = 256;
+  const height = 256;
 
-  // Create uncompressed raw image data (RGBA)
+  // Create raw RGBA image data
   const raw = Buffer.alloc(height * (1 + width * 4));
   let offset = 0;
 
+  const center = 127.5;
+  const outerRadius = 120;
+  const innerRadius = 108;
+  const borderThickness = 12;
+
   for (let y = 0; y < height; y++) {
-    raw[offset++] = 0; // Filter type 0 (None)
+    raw[offset++] = 0; // Filter type: None
     for (let x = 0; x < width; x++) {
-      const dist = Math.hypot(x - 15.5, y - 15.5);
-      // Outer gothic dark diamond / circle
-      const isBorder = (dist > 13.5 && dist <= 15.5);
-      const isInside = dist <= 13.5;
-      
-      // Gothic "F" cross symbol inside
-      const isFVertical = (x >= 10 && x <= 14 && y >= 6 && y <= 25);
-      const isFTopBar = (x >= 10 && x <= 23 && y >= 6 && y <= 10);
-      const isFMidBar = (x >= 10 && x <= 20 && y >= 14 && y <= 17);
-      const isLetterF = isFVertical || isFTopBar || isFMidBar;
+      const dist = Math.hypot(x - center, y - center);
+      const isBorder = (dist <= outerRadius && dist > innerRadius);
+      const isInside = dist <= innerRadius;
+
+      // Gothic "F" symbol in center (scaled for 256x256)
+      const isFVertical = (x >= 80 && x <= 112 && y >= 50 && y <= 206);
+      const isFTopBar = (x >= 80 && x <= 186 && y >= 50 && y <= 84);
+      const isFMidBar = (x >= 80 && x <= 162 && y >= 118 && y <= 148);
+      const isGothicCross = (y >= 118 && y <= 148 && x >= 56 && x <= 80);
+      const isLetterF = isFVertical || isFTopBar || isFMidBar || isGothicCross;
 
       if (isLetterF) {
-        // Glowing crimson / fiery red
+        // Glowing Fiery Crimson / Blood Magic Red
+        const grad = (y - 50) / 156;
         raw[offset++] = 239; // R
-        raw[offset++] = 68;  // G
-        raw[offset++] = 68;  // B
+        raw[offset++] = Math.round(50 + 30 * grad); // G
+        raw[offset++] = Math.round(50 + 20 * grad); // B
         raw[offset++] = 255; // A
       } else if (isBorder) {
-        // Gold border
-        raw[offset++] = 217;
-        raw[offset++] = 119;
-        raw[offset++] = 6;
+        // Imperial Gold / Cyber Amber Border
+        const angle = Math.atan2(y - center, x - center);
+        const shine = Math.sin(angle * 4) * 0.2 + 0.8;
+        raw[offset++] = Math.min(255, Math.round(234 * shine));
+        raw[offset++] = Math.min(255, Math.round(179 * shine));
+        raw[offset++] = Math.min(255, Math.round(8 * shine));
         raw[offset++] = 255;
       } else if (isInside) {
-        // Dark velvet obsidian background
-        raw[offset++] = 18;
-        raw[offset++] = 18;
-        raw[offset++] = 24;
-        raw[offset++] = 230;
+        // Dark Velvet Obsidian & Cyber Nebula
+        const radialDark = (dist / innerRadius);
+        raw[offset++] = Math.round(15 + 10 * radialDark);
+        raw[offset++] = Math.round(12 + 12 * radialDark);
+        raw[offset++] = Math.round(20 + 20 * radialDark);
+        raw[offset++] = 245;
       } else {
-        // Transparent
+        // Transparent background
         raw[offset++] = 0;
         raw[offset++] = 0;
         raw[offset++] = 0;
@@ -53,7 +61,6 @@ function generateTrayPng() {
     }
   }
 
-  // PNG Creation
   const compressed = zlib.deflateSync(raw);
 
   function makeChunk(type, data) {
@@ -101,7 +108,7 @@ function generateTrayPng() {
   const png = Buffer.concat([header, ihdrChunk, idatChunk, iendChunk]);
   const outPath = path.join(__dirname, '../src/renderer/assets/icon.png');
   fs.writeFileSync(outPath, png);
-  console.log('Icon PNG generated at:', outPath);
+  console.log(`✅ High-resolution 256x256 icon generated at: ${outPath}`);
 }
 
-generateTrayPng();
+generateHighResIcon();

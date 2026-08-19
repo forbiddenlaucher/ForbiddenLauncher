@@ -20,7 +20,8 @@
   "author": "Forbidden Requiem Team",
   "license": "MIT",
   "devDependencies": {
-    "electron": "^33.2.1"
+    "electron": "^33.2.1",
+    "electron-builder": "^26.15.3"
   },
   "dependencies": {
     "adm-zip": "^0.5.16"
@@ -29,8 +30,31 @@
     "appId": "com.forbiddenrequiem.launcher",
     "productName": "Forbidden Requiem Launcher",
     "win": {
-      "target": "nsis"
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        },
+        {
+          "target": "portable",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "icon": "src/renderer/assets/icon.png"
     },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "shortcutName": "Forbidden Requiem Launcher"
+    },
+    "files": [
+      "src/**/*",
+      "package.json"
+    ],
     "directories": {
       "output": "dist"
     }
