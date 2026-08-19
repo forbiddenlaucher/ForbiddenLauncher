@@ -323,6 +323,27 @@ class ManifestManager {
       });
     }
 
+    // 3. Automatic cleanup of deleted / removed mods (Delta Cleanup)
+    const localModsDir = path.join(gameDir, 'mods');
+    if (fs.existsSync(localModsDir) && files.length > 0) {
+      const validModFileNames = new Set(files.filter(f => f.path.startsWith('mods/')).map(f => path.basename(f.path)));
+
+      try {
+        const localModFiles = fs.readdirSync(localModsDir);
+        for (const localMod of localModFiles) {
+          if (localMod.endsWith('.jar') && !validModFileNames.has(localMod)) {
+            const obsoleteFilePath = path.join(localModsDir, localMod);
+            try {
+              fs.unlinkSync(obsoleteFilePath);
+              console.log(`[DELTA CLEANUP] Mod removido com sucesso: ${localMod}`);
+            } catch (err) {
+              console.warn(`Não foi possível remover mod: ${localMod}`);
+            }
+          }
+        }
+      } catch (e) {}
+    }
+
     // Check if local pack overrides exist (e.g. All The Mods Brasil in Downloads)
     if (packId === 'atm10') {
       const localDownloadsPack = path.join(process.env.USERPROFILE || 'C:\\Users\\takamura', 'Downloads', 'All The Mods Brasil', 'overrides');
