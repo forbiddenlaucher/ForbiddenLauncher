@@ -23,7 +23,7 @@
         "address": "play.forbiddenrequiem.com",
         "port": 25565
       },
-      "manifestUrl": "https://raw.githubusercontent.com/ForbiddenRequiem/Modpack/main/forbidden-requiem-manifest.json",
+      "manifestUrl": "https://raw.githubusercontent.com/forbiddenlaucher/ForbiddenLauncher/master/forbidden-requiem-manifest.json",
       "featuredMods": [
         { "name": "Thaumcraft 4", "category": "Magia Oculta", "description": "Manipule o Vis e desvende os mistérios proibidos da taumaturgia e do vazio." },
         { "name": "Blood Magic", "category": "Alquimia de Sangue", "description": "Sacrifique essência vital em altares de sangue para canalizar magias colossais." },
@@ -54,7 +54,7 @@
         "address": "atm.forbiddenrequiem.com",
         "port": 25565
       },
-      "manifestUrl": "https://raw.githubusercontent.com/ForbiddenRequiem/Modpack/main/atm10-manifest.json",
+      "manifestUrl": "https://raw.githubusercontent.com/forbiddenlaucher/ForbiddenLauncher/master/atm10-manifest.json",
       "featuredMods": [
         { "name": "Mekanism & Generators", "category": "Alta Tecnologia", "description": "Processamento avançado de minérios x5, reatores de fusão e energia massiva." },
         { "name": "Applied Energistics 2", "category": "Armazenamento ME", "description": "Redes quânticas de armazenamento digital e autocrafting automatizado." },

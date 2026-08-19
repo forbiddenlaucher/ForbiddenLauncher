@@ -2,7 +2,7 @@ const { app, shell } = require('electron');
 const https = require('https');
 
 // Default GitHub repository for launcher releases
-const DEFAULT_REPO = 'ForbiddenRequiem/ForbiddenLauncher';
+const DEFAULT_REPO = 'forbiddenlaucher/ForbiddenLauncher';
 
 class LauncherUpdater {
   constructor() {
