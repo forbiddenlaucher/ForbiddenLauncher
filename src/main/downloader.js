@@ -153,10 +153,10 @@ class Downloader {
   }
 
   /**
-   * Downloads multiple files with pool concurrency and aggregate progress reporting
+   * Downloads multiple files with pool concurrency and real-time aggregate progress reporting
    */
   async downloadBatch(items, onOverallProgress = () => {}) {
-    let totalItems = items.length;
+    const totalItems = items.length;
     let completedItems = 0;
     let totalBytesSum = items.reduce((acc, item) => acc + (item.size || 0), 0);
     let downloadedBytesSum = 0;
@@ -164,18 +164,41 @@ class Downloader {
     let itemIndex = 0;
     let errors = [];
 
+    let batchStartTime = Date.now();
+    let lastProgressTime = 0;
+
     return new Promise((resolve, reject) => {
-      if (items.length === 0) {
+      if (totalItems === 0) {
         onOverallProgress({
           completedItems: 0,
           totalItems: 0,
           percentage: 100,
           currentFile: '',
           downloadedBytes: 0,
-          totalBytes: 0
+          totalBytes: 0,
+          speedBytesPerSec: 0
         });
         return resolve();
       }
+
+      const reportProgress = (currentFileName = '', currentSpeed = 0) => {
+        const percent = totalBytesSum > 0 
+          ? (downloadedBytesSum / totalBytesSum) * 100 
+          : (completedItems / totalItems) * 100;
+
+        const elapsedBatch = (Date.now() - batchStartTime) / 1000;
+        const avgSpeed = elapsedBatch > 0 ? (downloadedBytesSum / elapsedBatch) : 0;
+
+        onOverallProgress({
+          completedItems,
+          totalItems,
+          percentage: Math.min(100, Math.max(0, percent)),
+          currentFile: currentFileName,
+          downloadedBytes: downloadedBytesSum,
+          totalBytes: totalBytesSum,
+          speedBytesPerSec: currentSpeed || avgSpeed
+        });
+      };
 
       const next = () => {
         if (errors.length > 0) {
@@ -183,6 +206,7 @@ class Downloader {
         }
 
         if (completedItems >= totalItems) {
+          reportProgress('', 0);
           return resolve();
         }
 
@@ -190,34 +214,37 @@ class Downloader {
           const currentItem = items[itemIndex++];
           activeWorkers++;
 
-          let lastItemBytes = 0;
+          let itemReceivedBytes = 0;
 
           this.downloadFile(currentItem.url, currentItem.dest, {
             expectedHash: currentItem.hash,
             hashAlgorithm: currentItem.hashAlgorithm || 'sha256',
             onProgress: (prog) => {
-              const delta = prog.receivedBytes - lastItemBytes;
-              lastItemBytes = prog.receivedBytes;
-              downloadedBytesSum += delta;
+              const delta = prog.receivedBytes - itemReceivedBytes;
+              if (delta > 0) {
+                itemReceivedBytes = prog.receivedBytes;
+                downloadedBytesSum += delta;
+              }
 
-              const percent = totalBytesSum > 0 
-                ? (downloadedBytesSum / totalBytesSum) * 100 
-                : (completedItems / totalItems) * 100;
-
-              onOverallProgress({
-                completedItems,
-                totalItems,
-                percentage: Math.min(100, percent),
-                currentFile: path.basename(currentItem.dest),
-                downloadedBytes: downloadedBytesSum,
-                totalBytes: totalBytesSum,
-                speedBytesPerSec: prog.speedBytesPerSec
-              });
+              const now = Date.now();
+              if (now - lastProgressTime >= 100) { // report progress at 10Hz
+                lastProgressTime = now;
+                reportProgress(path.basename(currentItem.dest), prog.speedBytesPerSec);
+              }
             }
           })
-            .then(() => {
+            .then((res) => {
               completedItems++;
               activeWorkers--;
+
+              // If file was tiny and didn't trigger chunk progress callbacks
+              if (itemReceivedBytes === 0 && res && res.totalBytes) {
+                downloadedBytesSum += res.totalBytes;
+              } else if (itemReceivedBytes === 0 && currentItem.size) {
+                downloadedBytesSum += currentItem.size;
+              }
+
+              reportProgress(path.basename(currentItem.dest));
               next();
             })
             .catch((err) => {

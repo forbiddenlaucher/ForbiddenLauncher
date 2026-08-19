@@ -385,6 +385,15 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
   }
 
+  function formatBytes(bytes) {
+    if (!bytes || isNaN(bytes) || bytes <= 0) return '0 MB';
+    const mb = bytes / (1024 * 1024);
+    if (mb >= 1024) {
+      return `${(mb / 1024).toFixed(2)} GB`;
+    }
+    return `${mb.toFixed(1)} MB`;
+  }
+
   // Progress events
   api.onInstallProgress((data) => {
     const isFr = data.packId === 'forbidden-requiem';
@@ -399,11 +408,21 @@ document.addEventListener('DOMContentLoaded', async () => {
     pctEl.textContent = `${Math.round(percent)}%`;
     fillEl.style.width = `${percent}%`;
 
-    if (data.downloadedBytes !== undefined && data.totalBytes !== undefined) {
-      detailEl.textContent = `${formatBytes(data.downloadedBytes)} / ${formatBytes(data.totalBytes)}`;
+    // Real-time downloaded / total display
+    if (data.totalBytes && data.totalBytes > 0) {
+      detailEl.textContent = `${formatBytes(data.downloadedBytes || 0)} / ${formatBytes(data.totalBytes)}`;
+    } else if (data.downloadedBytes && data.downloadedBytes > 0) {
+      detailEl.textContent = `${formatBytes(data.downloadedBytes)} baixados`;
+    } else if (data.completedItems !== undefined && data.totalItems) {
+      detailEl.textContent = `${data.completedItems} / ${data.totalItems} arquivos`;
+    } else {
+      detailEl.textContent = 'Calculando...';
     }
-    if (data.speedBytesPerSec) {
+
+    if (data.speedBytesPerSec && data.speedBytesPerSec > 0) {
       speedEl.textContent = `${formatBytes(data.speedBytesPerSec)}/s`;
+    } else if (percent >= 100) {
+      speedEl.textContent = 'Concluído';
     }
   });
 
