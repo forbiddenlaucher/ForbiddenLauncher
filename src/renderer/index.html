@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Forbidden Launcher — Universal Hub</title>
+  <link rel="stylesheet" href="css/variables.css">
+  <link rel="stylesheet" href="css/layout.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/animations.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <!-- Top Draggable Titlebar -->
+  <header class="titlebar">
+    <div class="titlebar-brand">
+      <svg class="titlebar-icon" viewBox="0 0 24 24">
+        <path d="M12 2L4 5v6.09c0 5.05 3.41 9.76 8 10.91 4.59-1.15 8-5.86 8-10.91V5l-8-3zm0 2.18l6 2.25v4.66c0 3.86-2.58 7.48-6 8.52-3.42-1.04-6-4.66-6-8.52V6.43l6-2.25zM11 7v6h2V7h-2zm0 8v2h2v-2h-2z"/>
+      </svg>
+      <span>FORBIDDEN LAUNCHER</span>
+    </div>
+    <div class="titlebar-controls">
+      <button class="titlebar-btn btn-min" id="btn-window-min" title="Minimizar">
+        <svg width="12" height="12" viewBox="0 0 12 12"><path fill="currentColor" d="M1 6h10v1H1z"/></svg>
+      </button>
+      <button class="titlebar-btn btn-max" id="btn-window-max" title="Maximizar">
+        <svg width="12" height="12" viewBox="0 0 12 12"><path fill="currentColor" d="M2 2h8v8H2V2zm1 1v6h6V3H3z"/></svg>
+      </button>
+      <button class="titlebar-btn btn-close" id="btn-window-close" title="Fechar">
+        <svg width="12" height="12" viewBox="0 0 12 12"><path fill="currentColor" d="M3 2.3l-.7.7L5.3 6 2.3 9l.7.7L6 6.7 9 9.7l.7-.7L6.7 6 9.7 3l-.7-.7L6 5.3 3 2.3z"/></svg>
+      </button>
+    </div>
+  </header>
+
+  <!-- App Layout -->
+  <div class="app-container">
+    <canvas id="particle-canvas"></canvas>
+
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-logo">FORBIDDEN</div>
+        <div class="sidebar-logo" style="color: var(--fr-blood-bright);">LAUNCHER</div>
+        <div class="sidebar-sublogo">Universal Hub</div>
+      </div>
+
+      <nav class="sidebar-nav">
+        <button class="nav-item active" data-view="home" id="nav-home">
+          <svg viewBox="0 0 24 24"><path d="M12 2L2 12h3v8h6v-6h2v6h6v-8h3L12 2z"/></svg>
+          <span>UNIVERSO</span>
+        </button>
+
+        <button class="nav-item" data-view="modpacks" id="nav-modpacks">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm16-4H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H8V4h12v12zm-8-3h8v-2h-8v2zm0-3h8V8h-8v2zm0-3h8V5h-8v2z"/></svg>
+          <span>MODPACKS</span>
+        </button>
+
+        <button class="nav-item" data-view="servers" id="nav-servers">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
+          <span>SERVIDORES</span>
+        </button>
+
+        <button class="nav-item" data-view="logs" id="nav-logs">
+          <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 14H6v-2h6v2zm4-4H6v-2h10v2zm0-4H6V7h10v2z"/></svg>
+          <span>REGISTROS</span>
+        </button>
+
+        <button class="nav-item" data-view="settings" id="nav-settings">
+          <svg viewBox="0 0 24 24"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg>
+          <span>CONFIGURAÇÕES</span>
+        </button>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="player-card">
+          <img class="player-avatar" id="sidebar-avatar" src="https://minotar.net/avatar/ShadowSeeker/32" alt="Avatar">
+          <div class="player-info">
+            <span class="player-name" id="sidebar-username">ShadowSeeker</span>
+            <span class="player-status">Hub Universal</span>
+          </div>
+        </div>
+
+        <button class="btn-exit-launcher" id="btn-open-exit-modal">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm5 13.59L15.59 17 12 13.41 8.41 17 7 15.59 10.59 12 7 8.41 8.41 7 12 10.59 15.59 7 17 8.41 13.41 12 17 15.59z"/></svg>
+          <span>SAIR</span>
+        </button>
+      </div>
+    </aside>
+
+    <!-- Main Viewport Content -->
+    <main class="content-viewport">
+      <!-- VIEW 1: UNIVERSO / HUB (DUAL SPLIT CARDS) -->
+      <section class="view-section active" id="view-home">
+        <div class="hub-container">
+          <!-- CARD 1: FORBIDDEN REQUIEM (1.7.10) -->
+          <div class="modpack-hub-card card-forbidden" id="hub-card-forbidden">
+            <div class="card-content-wrap">
+              <div>
+                <span class="pack-badge">MINECRAFT 1.7.10 • FORGE</span>
+                <h2 class="pack-title">FORBIDDEN REQUIEM</h2>
+                <div class="pack-chapter">CHAPTER I — THE FALLEN</div>
+                <p class="pack-tagline">
+                  "Comece sua jornada em uma terra de dark fantasy, com os grandes mods da era de ouro do Minecraft 1.7.10."
+                </p>
+
+                <div class="pack-specs">
+                  <span class="spec-chip">84 Mods Clássicos</span>
+                  <span class="spec-chip">Java 8</span>
+                  <span class="spec-chip">4 GB RAM</span>
+                  <span class="spec-chip" id="size-chip-fr">💾 ~850 MB Instalado</span>
+                </div>
+              </div>
+
+              <div class="card-action-box">
+                <button class="btn-action" id="btn-action-forbidden">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+                  <span id="text-action-forbidden">INSTALAR</span>
+                </button>
+
+                <!-- Progress Box -->
+                <div class="card-progress-box" id="progbox-forbidden">
+                  <div style="display: flex; justify-content: space-between; font-size: 10px; color: var(--text-main);">
+                    <span id="progmsg-forbidden">Baixando...</span>
+                    <span id="progpct-forbidden">0%</span>
+                  </div>
+                  <div class="card-progress-track">
+                    <div class="card-progress-fill" id="progfill-forbidden"></div>
+                  </div>
+                  <div style="display: flex; justify-content: space-between; font-size: 9px; color: var(--text-muted);">
+                    <span id="progdetail-forbidden">0 MB / 0 MB</span>
+                    <span id="progspeed-forbidden">0 MB/s</span>
+                  </div>
+                </div>
+
+                <div class="card-server-status">
+                  <div class="status-dot online" id="dot-forbidden"></div>
+                  <span id="server-txt-forbidden">play.forbiddenrequiem.com • Verificando...</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- CARD 2: ALL THE MODS 10 (1.21.1) -->
+          <div class="modpack-hub-card card-atm10" id="hub-card-atm10">
+            <div class="card-content-wrap">
+              <div>
+                <span class="pack-badge">MINECRAFT 1.21.1 • NEOFORGE</span>
+                <h2 class="pack-title">ALL THE MODS 10</h2>
+                <div class="pack-chapter">ATM BRASIL • QUEST FOR ATM STAR</div>
+                <p class="pack-tagline">
+                  "Explore, automatize e avance até conquistar a ATM Star — um objetivo que exige dominar quase todos os mods :D"
+                </p>
+
+                <div class="pack-specs">
+                  <span class="spec-chip">484 Mods (ATM Brasil)</span>
+                  <span class="spec-chip">Java 21</span>
+                  <span class="spec-chip">8 GB RAM</span>
+                  <span class="spec-chip" id="size-chip-atm">💾 ~2.2 GB Instalado</span>
+                </div>
+              </div>
+
+              <div class="card-action-box">
+                <button class="btn-action" id="btn-action-atm10">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+                  <span id="text-action-atm10">INSTALAR</span>
+                </button>
+
+                <!-- Progress Box -->
+                <div class="card-progress-box" id="progbox-atm10">
+                  <div style="display: flex; justify-content: space-between; font-size: 10px; color: var(--text-main);">
+                    <span id="progmsg-atm10">Baixando...</span>
+                    <span id="progpct-atm10">0%</span>
+                  </div>
+                  <div class="card-progress-track">
+                    <div class="card-progress-fill" id="progfill-atm10"></div>
+                  </div>
+                  <div style="display: flex; justify-content: space-between; font-size: 9px; color: var(--text-muted);">
+                    <span id="progdetail-atm10">0 MB / 0 MB</span>
+                    <span id="progspeed-atm10">0 MB/s</span>
+                  </div>
+                </div>
+
+                <div class="card-server-status">
+                  <div class="status-dot online" id="dot-atm10"></div>
+                  <span id="server-txt-atm10">allthemods.com.br • Verificando...</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- VIEW 2: MODPACKS & GRIMOIRE -->
+      <section class="view-section" id="view-modpacks">
+        <div class="gothic-panel">
+          <div class="panel-header">
+            <div>
+              <h2 class="panel-title">CATÁLOGO & ARSENAL DE MODS</h2>
+              <div class="panel-subtitle">Explore os recursos e modificações de cada mundo</div>
+            </div>
+            <input type="text" class="input-gothic" id="input-search-mods" placeholder="Filtrar mods..." style="max-width: 220px; padding: 6px 12px;">
+          </div>
+
+          <div class="modpack-tab-switch">
+            <button class="btn-pack-switch active" id="tab-btn-forbidden" data-pack="forbidden-requiem">Forbidden Requiem (1.7.10)</button>
+            <button class="btn-pack-switch" id="tab-btn-atm10" data-pack="atm10">All The Mods 10 (1.21.1)</button>
+          </div>
+
+          <div id="pack-lore-box" style="font-size: 12px; color: var(--text-muted); line-height: 1.6; margin-bottom: 20px;">
+            <!-- Dynamic lore description -->
+          </div>
+
+          <div class="modpack-grid" id="modpack-mods-container">
+            <!-- Populated via JS -->
+          </div>
+        </div>
+      </section>
+
+      <!-- VIEW 3: SERVIDORES -->
+      <section class="view-section" id="view-servers">
+        <div class="gothic-panel">
+          <div class="panel-header">
+            <div>
+              <h2 class="panel-title">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" style="color: var(--atm-cyan-bright);"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
+                REINOS & SERVIDORES OFICIAIS
+              </h2>
+              <div class="panel-subtitle">Monitoramento em tempo real de latência e jogadores online</div>
+            </div>
+            <button class="btn-secondary" id="btn-refresh-all-servers">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/></svg>
+              <span>Atualizar Status</span>
+            </button>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+            <!-- Server 1: Requiem -->
+            <div class="gothic-panel server-card server-card-fr" style="background: rgba(26,8,8,0.5); border: 1px solid rgba(220,38,38,0.3); border-radius: 8px; padding: 20px;">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
+                <div style="display: flex; align-items: center; gap: 8px;">
+                  <div class="status-dot online" id="dot-indicator-fr"></div>
+                  <span style="font-family: var(--font-serif); font-weight: 700; color: #ff5e5e; font-size: 15px; letter-spacing: 1px;">FORBIDDEN REQUIEM 1.7.10</span>
+                </div>
+                <span class="server-status-pill online" id="srv-status-fr">● Online</span>
+              </div>
+              <div class="input-with-btn">
+                <input type="text" class="input-gothic" value="play.forbiddenrequiem.com" readonly id="ip-fr-val" style="background: rgba(0,0,0,0.5); font-family: var(--font-mono); font-size: 12px;">
+                <button class="btn-secondary btn-copy-action" id="btn-copy-ip-fr">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
+                  <span>Copiar</span>
+                </button>
+              </div>
+              <div style="display: flex; justify-content: space-between; align-items: center; font-size: 12px; margin-top: 16px; padding-top: 12px; border-top: 1px solid rgba(255,255,255,0.06); color: var(--text-muted);">
+                <span>Latência: <b id="srv-ping-fr" style="color: #fbbf24; font-weight: 700;">14 ms</b></span>
+                <span>Aventureiros: <b id="srv-players-fr" style="color: #ffffff; font-weight: 700;">6 / 50</b></span>
+              </div>
+            </div>
+
+            <!-- Server 2: ATM 10 -->
+            <div class="gothic-panel server-card server-card-atm" style="background: rgba(8,20,36,0.5); border: 1px solid rgba(14,165,233,0.3); border-radius: 8px; padding: 20px;">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
+                <div style="display: flex; align-items: center; gap: 8px;">
+                  <div class="status-dot online" id="dot-indicator-atm"></div>
+                  <span style="font-weight: 700; color: var(--atm-cyan-bright); font-size: 15px; letter-spacing: 1px;">ALL THE MODS 10 (1.21.1)</span>
+                </div>
+                <span class="server-status-pill online" id="srv-status-atm">● Online</span>
+              </div>
+              <div class="input-with-btn">
+                <input type="text" class="input-gothic" value="allthemods.com.br" readonly id="ip-atm-val" style="background: rgba(0,0,0,0.5); font-family: var(--font-mono); font-size: 12px;">
+                <button class="btn-secondary btn-copy-action" id="btn-copy-ip-atm">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
+                  <span>Copiar</span>
+                </button>
+              </div>
+              <div style="display: flex; justify-content: space-between; align-items: center; font-size: 12px; margin-top: 16px; padding-top: 12px; border-top: 1px solid rgba(255,255,255,0.06); color: var(--text-muted);">
+                <span>Latência: <b id="srv-ping-atm" style="color: var(--atm-gold); font-weight: 700;">18 ms</b></span>
+                <span>Aventureiros: <b id="srv-players-atm" style="color: #ffffff; font-weight: 700;">12 / 80</b></span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- VIEW 4: REGISTROS & LOGS -->
+      <section class="view-section" id="view-logs">
+        <div class="gothic-panel" style="display: flex; flex-direction: column; flex: 1;">
+          <div class="panel-header">
+            <div>
+              <h2 class="panel-title">TERMINAL DE REGISTROS</h2>
+              <div class="panel-subtitle">Saída em tempo real do download e execução de instâncias</div>
+            </div>
+            <div style="display: flex; gap: 8px;">
+              <button class="btn-secondary" id="btn-clear-logs">Limpar</button>
+              <button class="btn-secondary" id="btn-export-logs">Copiar Logs</button>
+            </div>
+          </div>
+
+          <div class="console-box" id="console-logs-container">
+            <div class="log-line log-tag-INFO">[SISTEMA] Forbidden Launcher Universal Hub inicializado.</div>
+            <div class="log-line log-tag-INFO">[SISTEMA] Catálogo carregado com sucesso (Forbidden Requiem & ATM 10).</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- VIEW 5: CONFIGURAÇÕES -->
+      <section class="view-section" id="view-settings">
+        <div class="settings-container">
+          <!-- Settings Top Header -->
+          <div class="settings-main-header">
+            <div>
+              <h2 class="panel-title" style="font-size: 20px;">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg>
+                CONFIGURAÇÕES & PERFORMANCE DO REINO
+              </h2>
+              <div class="panel-subtitle">Personalização de perfil, alocação de memória RAM e instâncias</div>
+            </div>
+            <button class="btn-action btn-save-main" id="btn-save-settings">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M17 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V7l-4-4zm-5 16c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3zm3-10H5V5h10v4z"/></svg>
+              <span>SALVAR PREFERÊNCIAS</span>
+            </button>
+          </div>
+
+          <div class="settings-grid-layout">
+            <!-- CARD 1: Perfil do Jogador & Autenticação -->
+            <div class="settings-card card-player-profile">
+              <div class="settings-card-header">
+                <span class="settings-card-tag">AUTENTICAÇÃO & PERFIL</span>
+                <h3 class="settings-card-title">Identidade do Aventureiro</h3>
+              </div>
+
+              <!-- Auth Type Switcher -->
+              <div class="auth-type-switch">
+                <button class="btn-auth-type active" id="btn-type-offline">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
+                  <span>Modo Pirata / Offline</span>
+                </button>
+                <button class="btn-auth-type btn-auth-ms" id="btn-type-microsoft">
+                  <svg width="14" height="14" viewBox="0 0 21 21"><rect x="1" y="1" width="9" height="9" fill="#f25022"/><rect x="11" y="1" width="9" height="9" fill="#7fba00"/><rect x="1" y="11" width="9" height="9" fill="#00a4ef"/><rect x="11" y="11" width="9" height="9" fill="#ffb900"/></svg>
+                  <span>Conta Microsoft Original</span>
+                </button>
+              </div>
+
+              <div class="profile-inner-flex">
+                <div class="profile-avatar-box">
+                  <div class="avatar-frame" id="avatar-frame-wrap">
+                    <img id="settings-avatar-preview" src="https://minotar.net/avatar/ShadowSeeker/64" alt="Skin Head">
+                  </div>
+                  <span class="avatar-badge" id="avatar-badge-status">● MODO OFFLINE</span>
+                </div>
+
+                <div class="profile-inputs-box">
+                  <!-- Section Offline -->
+                  <div id="section-auth-offline">
+                    <label class="setting-label" for="setting-username">Nome de Usuário (Nickname)</label>
+                    <div class="input-glow-wrap">
+                      <input type="text" class="input-gothic" id="setting-username" value="ShadowSeeker" placeholder="Ex: LordVampir">
+                    </div>
+                    <div class="setting-hint">
+                      Digite qualquer nickname para jogar no modo offline.
+                    </div>
+                  </div>
+
+                  <!-- Section Microsoft -->
+                  <div id="section-auth-microsoft" style="display: none;">
+                    <div id="ms-logged-out-box">
+                      <button class="btn-ms-login" id="btn-ms-login-action" style="margin-bottom: 12px;">
+                        <svg width="16" height="16" viewBox="0 0 21 21"><rect x="1" y="1" width="9" height="9" fill="#f25022"/><rect x="11" y="1" width="9" height="9" fill="#7fba00"/><rect x="1" y="11" width="9" height="9" fill="#00a4ef"/><rect x="11" y="11" width="9" height="9" fill="#ffb900"/></svg>
+                        <span>Conectar via Janela Microsoft (OAuth)</span>
+                      </button>
+
+                      <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 10px;">
+                        <div style="flex: 1; height: 1px; background: rgba(255,255,255,0.08);"></div>
+                        <span style="font-size: 10px; color: var(--text-muted); text-transform: uppercase;">Ou Ativação Rápida por Nickname Original</span>
+                        <div style="flex: 1; height: 1px; background: rgba(255,255,255,0.08);"></div>
+                      </div>
+
+                      <div class="input-with-btn">
+                        <input type="text" class="input-gothic" id="input-verify-original-name" placeholder="Digite seu nickname original (ex: ccbcp)" style="font-size: 12px;">
+                        <button class="btn-secondary" id="btn-verify-original-action" style="white-space: nowrap; border-color: #ffd700; color: #ffd700;">
+                          <span>👑 Ativar Moldura Real</span>
+                        </button>
+                      </div>
+                      <div class="setting-hint" style="margin-top: 6px;" id="verify-feedback-msg">
+                        A verificação consulta diretamente os servidores da Mojang para carregar sua skin oficial com a <b>Moldura Dourada Real</b>.
+                      </div>
+                    </div>
+
+                    <div id="ms-logged-in-box" style="display: none;">
+                      <div style="font-size: 13px; font-weight: 700; color: #ffd700; display: flex; align-items: center; gap: 6px;">
+                        <span>👑 CONTA ORIGINAL ATIVADA:</span>
+                        <span id="ms-player-name" style="color: #fff;">Steve</span>
+                      </div>
+                      <div style="font-size: 10px; color: var(--text-muted); font-family: var(--font-mono); margin: 4px 0 10px 0;" id="ms-player-uuid">UUID: ...</div>
+                      <button class="btn-secondary" id="btn-ms-logout-action" style="padding: 4px 12px; font-size: 11px; color: #ef4444; border-color: rgba(239,68,68,0.4);">
+                        Desconectar / Trocar Conta
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- CARD 2: Memória RAM Forbidden Requiem -->
+            <div class="settings-card card-ram-fr">
+              <div class="settings-card-header">
+                <span class="settings-card-tag tag-fr">1.7.10 • FORGE</span>
+                <h3 class="settings-card-title" style="color: #ff5e5e;">Memória: Forbidden Requiem</h3>
+              </div>
+              <div class="ram-control-box">
+                <div class="ram-header-info">
+                  <span class="ram-label-text">Alocação de RAM</span>
+                  <span class="ram-badge-val" id="ram-val-fr">4096 MB (4 GB)</span>
+                </div>
+                <div class="slider-track-wrap">
+                  <input type="range" class="range-slider slider-fr" id="slider-ram-fr" min="2048" max="16384" step="512" value="4096">
+                </div>
+                <div class="ram-presets-row">
+                  <span class="preset-label">Atalhos:</span>
+                  <button class="btn-ram-preset" data-slider="slider-ram-fr" data-val="3072">3 GB</button>
+                  <button class="btn-ram-preset active" data-slider="slider-ram-fr" data-val="4096">4 GB ★ Sugerido</button>
+                  <button class="btn-ram-preset" data-slider="slider-ram-fr" data-val="6144">6 GB</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- CARD 3: Memória RAM ATM 10 -->
+            <div class="settings-card card-ram-atm">
+              <div class="settings-card-header">
+                <span class="settings-card-tag tag-atm">1.21.1 • NEOFORGE</span>
+                <h3 class="settings-card-title" style="color: var(--atm-cyan-bright);">Memória: All The Mods 10</h3>
+              </div>
+              <div class="ram-control-box">
+                <div class="ram-header-info">
+                  <span class="ram-label-text">Alocação de RAM</span>
+                  <span class="ram-badge-val" id="ram-val-atm">8192 MB (8 GB)</span>
+                </div>
+                <div class="slider-track-wrap">
+                  <input type="range" class="range-slider slider-atm" id="slider-ram-atm" min="4096" max="24576" step="512" value="8192">
+                </div>
+                <div class="ram-presets-row">
+                  <span class="preset-label">Atalhos:</span>
+                  <button class="btn-ram-preset" data-slider="slider-ram-atm" data-val="6144">6 GB</button>
+                  <button class="btn-ram-preset active" data-slider="slider-ram-atm" data-val="8192">8 GB ★ Sugerido</button>
+                  <button class="btn-ram-preset" data-slider="slider-ram-atm" data-val="10240">10 GB</button>
+                  <button class="btn-ram-preset" data-slider="slider-ram-atm" data-val="12288">12 GB</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- CARD 4: Ambientes Java -->
+            <div class="settings-card card-java-info">
+              <div class="settings-card-header">
+                <span class="settings-card-tag">RUNTIMES</span>
+                <h3 class="settings-card-title">Ambientes Java Gerenciados</h3>
+              </div>
+              <div class="java-status-list">
+                <div class="java-status-item">
+                  <div class="java-status-title">
+                    <span style="font-weight: 700; color: #ff5e5e;">Java 8 (Adoptium Temurin 64-bit)</span>
+                    <span class="badge-status-ok">● Pronto / Auto</span>
+                  </div>
+                  <div class="java-status-desc">Necessário para Forbidden Requiem 1.7.10 (Forge)</div>
+                </div>
+                <div class="java-status-item">
+                  <div class="java-status-title">
+                    <span style="font-weight: 700; color: var(--atm-cyan-bright);">Java 21 (Adoptium Temurin 64-bit)</span>
+                    <span class="badge-status-ok">● Pronto / Auto</span>
+                  </div>
+                  <div class="java-status-desc">Necessário para All The Mods 10 (1.21.1 NeoForge)</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- CARD 5: Performance & Economia de Memória RAM -->
+            <div class="settings-card card-eco-performance">
+              <div class="settings-card-header">
+                <span class="settings-card-tag" style="background: rgba(16,185,129,0.15); color: #10b981; border: 1px solid rgba(16,185,129,0.3);">ECONOMIA</span>
+                <h3 class="settings-card-title" style="color: #10b981;">Performance & Consumo de Memória</h3>
+              </div>
+              <div style="display: flex; flex-direction: column; gap: 16px;">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                  <div>
+                    <div style="font-size: 13px; font-weight: 700; color: #fff;">Modo Econômico / Baixo Consumo</div>
+                    <div style="font-size: 11px; color: var(--text-muted);">Desativa partículas e efeitos visuais pesados para economizar RAM e CPU.</div>
+                  </div>
+                  <label class="toggle-switch">
+                    <input type="checkbox" id="setting-eco-mode">
+                    <span class="toggle-slider"></span>
+                  </label>
+                </div>
+
+                <div style="border-top: 1px solid rgba(255,255,255,0.06); padding-top: 12px;">
+                  <label class="setting-label" for="setting-launch-action">Ação ao Iniciar o Minecraft</label>
+                  <select class="input-gothic" id="setting-launch-action" style="cursor: pointer; padding: 8px 12px;">
+                    <option value="minimize-tray">🛡️ Minimizar para a Bandeja do Sistema (Tray / Modo Sleep)</option>
+                    <option value="close">⚡ Fechar o Launcher (0 MB de RAM enquanto joga)</option>
+                    <option value="keep">🖥️ Manter o Launcher Aberto</option>
+                  </select>
+                  <div class="setting-hint">Ao minimizar para a bandeja, o launcher suspende renderizações e volta automaticamente ao fechar o jogo.</div>
+                </div>
+
+                <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid rgba(255,255,255,0.06); padding-top: 12px;">
+                  <div>
+                    <div style="font-size: 13px; font-weight: 700; color: #fff;">Minimizar para a Bandeja ao Clicar em (X)</div>
+                    <div style="font-size: 11px; color: var(--text-muted);">Mantém o launcher acessível pelo ícone perto do relógio do Windows.</div>
+                  </div>
+                  <label class="toggle-switch">
+                    <input type="checkbox" id="setting-close-to-tray">
+                    <span class="toggle-slider"></span>
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <!-- CARD 6: Pastas das Instâncias -->
+            <div class="settings-card card-instances-paths" style="grid-column: span 2;">
+              <div class="settings-card-header">
+                <span class="settings-card-tag">DIRETÓRIOS</span>
+                <h3 class="settings-card-title">Pastas Isoladas das Instâncias</h3>
+              </div>
+              <div class="folders-dual-grid">
+                <div class="folder-action-card">
+                  <div>
+                    <div style="font-weight: 700; font-size: 12px; color: #ff5e5e; margin-bottom: 4px;">Instância: Forbidden Requiem</div>
+                    <div class="folder-path-text">%APPDATA%\ForbiddenLauncher\instances\forbidden-requiem</div>
+                  </div>
+                  <button class="btn-secondary" id="btn-open-folder-fr">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M20 6h-8l-2-2H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm0 12H4V8h16v10z"/></svg>
+                    Abrir Pasta
+                  </button>
+                </div>
+
+                <div class="folder-action-card">
+                  <div>
+                    <div style="font-weight: 700; font-size: 12px; color: var(--atm-cyan-bright); margin-bottom: 4px;">Instância: All The Mods 10</div>
+                    <div class="folder-path-text">%APPDATA%\ForbiddenLauncher\instances\atm10</div>
+                  </div>
+                  <button class="btn-secondary" id="btn-open-folder-atm">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M20 6h-8l-2-2H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm0 12H4V8h16v10z"/></svg>
+                    Abrir Pasta
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- Exit Modal -->
+  <div class="modal-overlay" id="modal-exit">
+    <div class="modal-card">
+      <h3 style="font-family: var(--font-serif); color: #fff; margin-bottom: 12px;">FECHAR FORBIDDEN LAUNCHER?</h3>
+      <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 20px;">
+        Tem certeza que deseja sair? Suas instâncias e configurações estão salvas.
+      </p>
+      <div style="display: flex; justify-content: center; gap: 12px;">
+        <button class="btn-secondary" id="btn-modal-cancel">Permanecer</button>
+        <button class="btn-action" id="btn-modal-confirm-exit" style="width: auto; height: 34px; font-size: 12px; padding: 0 18px;">Fechar</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/particles.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

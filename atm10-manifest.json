@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 1,
+  "id": "atm10",
+  "name": "All the Mods 10 (ATM Brasil)",
+  "version": "10.0.0",
+  "minecraft": {
+    "version": "1.21.1",
+    "loader": {
+      "type": "neoforge",
+      "version": "21.1.235"
+    }
+  },
+  "java": {
+    "majorVersion": 21,
+    "distribution": "temurin",
+    "url": "https://api.adoptium.net/v3/binary/latest/21/ga/windows/x64/jre/hotspot/normal/eclipse?project=jdk"
+  },
+  "memory": {
+    "recommendedMb": 8192,
+    "minimumMb": 6144
+  },
+  "estimatedSizeMb": 2200,
+  "totalModsCount": 484,
+  "server": {
+    "name": "All The Mods 10 • Servidor Oficial",
+    "address": "atm.forbiddenrequiem.com",
+    "port": 25565
+  },
+  "files": []
+}

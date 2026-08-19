@@ -1,0 +1,42 @@
+:root {
+  /* Abyss / Base Palette */
+  --bg-abyss: #07070a;
+  --bg-panel: rgba(12, 11, 16, 0.88);
+  --border-subtle: rgba(255, 255, 255, 0.08);
+
+  /* Theme 1: Forbidden Requiem (Dark Fantasy / Blood Crimson) */
+  --fr-blood: #8a0303;
+  --fr-blood-bright: #b80000;
+  --fr-blood-glow: rgba(184, 0, 0, 0.55);
+  --fr-gold: #c59b27;
+  --fr-gold-glow: rgba(197, 155, 39, 0.4);
+  --fr-card-bg: linear-gradient(180deg, rgba(26, 8, 8, 0.85) 0%, rgba(10, 8, 12, 0.95) 100%);
+  --fr-border: rgba(184, 0, 0, 0.45);
+
+  /* Theme 2: ATM 10 (Cosmic Tech / Celestial Cyan & Gold) */
+  --atm-cyan: #00d4ff;
+  --atm-cyan-bright: #38e1ff;
+  --atm-cyan-glow: rgba(0, 212, 255, 0.55);
+  --atm-purple: #7928ca;
+  --atm-gold: #ffd700;
+  --atm-gold-glow: rgba(255, 215, 0, 0.4);
+  --atm-card-bg: linear-gradient(180deg, rgba(8, 20, 36, 0.85) 0%, rgba(8, 10, 18, 0.95) 100%);
+  --atm-border: rgba(0, 212, 255, 0.45);
+
+  /* Text & Status */
+  --text-main: #e2dcd2;
+  --text-muted: #8e8894;
+  --text-dark: #58535e;
+  --status-online: #22c55e;
+  --status-offline: #ef4444;
+  --status-warn: #f59e0b;
+
+  /* Typography */
+  --font-serif: 'Cinzel', 'Uncial Antiqua', 'Georgia', serif;
+  --font-sans: 'Inter', 'Segoe UI', -apple-system, sans-serif;
+  --font-mono: 'Consolas', 'Fira Code', monospace;
+
+  /* Dimensions */
+  --sidebar-width: 220px;
+  --titlebar-height: 38px;
+}

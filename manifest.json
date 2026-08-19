@@ -1,0 +1,67 @@
+{
+  "name": "Forbidden Requiem",
+  "version": "1.0.0",
+  "chapter": "CHAPTER I — THE FALLEN",
+  "subtitle": "O mundo não deveria existir.",
+  "minecraft": "1.7.10",
+  "forge": "10.13.4.1614",
+  "totalModsCount": 84,
+  "serverAddress": "play.forbiddenrequiem.com",
+  "serverPort": 25565,
+  "featuredMods": [
+    {
+      "name": "Thaumcraft 4",
+      "category": "Magia Oculta",
+      "description": "Manipule o Vis, crie varinhas arcanas e desvende os mistérios proibidos da taumaturgia e do vazio."
+    },
+    {
+      "name": "Blood Magic",
+      "category": "Alquimia de Sangue",
+      "description": "Sacrifique essência vital em altares profanos para forjar orbes de sangue e canalizar rituais colossais."
+    },
+    {
+      "name": "Twilight Forest",
+      "category": "Dimensão Sombria",
+      "description": "Uma floresta de crepúsculo perpétuo governada pela Hidra, Cavaleiros Fantasmas e a Rainha de Gelo."
+    },
+    {
+      "name": "Witchery",
+      "category": "Bruxaria & Maldições",
+      "description": "Rituais de invocação com círculos de giz, poções em caldeirões, vampirismo e licantropia nas noites de lua cheia."
+    },
+    {
+      "name": "Grimoire of Gaia 3",
+      "category": "Bestiário Sombrio",
+      "description": "Criaturas mitológicas, sereias, valquírias e horrores implacáveis caçando nas ruínas do mundo."
+    },
+    {
+      "name": "Tinkers' Construct",
+      "category": "Forja Medieval",
+      "description": "Funda metais derretidos em altos-fornos de tijolos de terra para forjar armaduras e espadas customizadas."
+    },
+    {
+      "name": "Hardcore Darkness",
+      "category": "Atmosfera",
+      "description": "Remoção da luz mínima: sem tochas acesas, você é engolido pela escuridão absoluta."
+    },
+    {
+      "name": "Custom NPCs",
+      "category": "Facções & Quests",
+      "description": "Contratos de caça, guardas sombrios, mercadores de relíquias e chefes épicos em masmorras."
+    }
+  ],
+  "changelog": [
+    {
+      "version": "1.0.0",
+      "title": "Capítulo I — The Fallen",
+      "date": "18/08/2026",
+      "notes": [
+        "Lançamento do pacote oficial do Forbidden Requiem 1.7.10.",
+        "84 Mods balanceados para imersão medieval sombria sem poluição visual.",
+        "Sistema de combate com mecânicas avançadas e inteligência hostil reforçada.",
+        "Configurações e scripts pré-carregados para otimização de FPS em Java 8."
+      ]
+    }
+  ],
+  "files": []
+}

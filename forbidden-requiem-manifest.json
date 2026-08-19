@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 1,
+  "id": "forbidden-requiem",
+  "name": "Forbidden Requiem",
+  "version": "1.0.0",
+  "minecraft": {
+    "version": "1.7.10",
+    "loader": {
+      "type": "forge",
+      "version": "10.13.4.1614"
+    }
+  },
+  "java": {
+    "majorVersion": 8,
+    "distribution": "temurin",
+    "url": "https://api.adoptium.net/v3/binary/latest/8/ga/windows/x64/jre/hotspot/normal/eclipse?project=jdk"
+  },
+  "memory": {
+    "recommendedMb": 4096,
+    "minimumMb": 2048
+  },
+  "server": {
+    "name": "Forbidden Requiem • Servidor Oficial",
+    "address": "play.forbiddenrequiem.com",
+    "port": 25565
+  },
+  "files": []
+}

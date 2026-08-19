@@ -1,0 +1,70 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-08-18T19:00:00Z",
+  "modpacks": [
+    {
+      "id": "forbidden-requiem",
+      "name": "Forbidden Requiem",
+      "minecraftVersion": "1.7.10",
+      "loader": "forge",
+      "loaderVersion": "10.13.4.1614",
+      "latestVersion": "1.0.0",
+      "totalModsCount": 84,
+      "estimatedSizeMb": 850,
+      "tagline": "Comece sua jornada em uma terra de dark fantasy, com os grandes mods da era de ouro do Minecraft 1.7.10.",
+      "theme": "dark-fantasy",
+      "javaMajorVersion": 8,
+      "memory": {
+        "recommendedMb": 4096,
+        "minimumMb": 2048
+      },
+      "server": {
+        "name": "Forbidden Requiem • Servidor Oficial",
+        "address": "play.forbiddenrequiem.com",
+        "port": 25565
+      },
+      "manifestUrl": "https://raw.githubusercontent.com/ForbiddenRequiem/Modpack/main/forbidden-requiem-manifest.json",
+      "featuredMods": [
+        { "name": "Thaumcraft 4", "category": "Magia Oculta", "description": "Manipule o Vis e desvende os mistérios proibidos da taumaturgia e do vazio." },
+        { "name": "Blood Magic", "category": "Alquimia de Sangue", "description": "Sacrifique essência vital em altares de sangue para canalizar magias colossais." },
+        { "name": "Twilight Forest", "category": "Dimensão Sombria", "description": "Uma floresta mística governada por titãs e feras lendárias." },
+        { "name": "Witchery", "category": "Bruxaria & Covens", "description": "Rituais de invocação, maldições, vampirismo e licantropia nas noites sombrias." },
+        { "name": "Tinkers' Construct", "category": "Forja Medieval", "description": "Funda ligas proibidas de metais para forjar armas de corte e destruição." },
+        { "name": "Grimoire of Gaia 3", "category": "Bestiário Sombrio", "description": "Criaturas mitológicas implacáveis à espreita na escuridão." }
+      ]
+    },
+    {
+      "id": "atm10",
+      "name": "All the Mods 10 (ATM Brasil)",
+      "minecraftVersion": "1.21.1",
+      "loader": "neoforge",
+      "loaderVersion": "21.1.235",
+      "latestVersion": "10.0.0",
+      "totalModsCount": 484,
+      "estimatedSizeMb": 2200,
+      "tagline": "Explore, automatize e avance até conquistar a ATM Star — um objetivo que exige dominar quase todos os mods :D",
+      "theme": "atm10",
+      "javaMajorVersion": 21,
+      "memory": {
+        "recommendedMb": 8192,
+        "minimumMb": 6144
+      },
+      "server": {
+        "name": "All The Mods 10 • Servidor Oficial",
+        "address": "atm.forbiddenrequiem.com",
+        "port": 25565
+      },
+      "manifestUrl": "https://raw.githubusercontent.com/ForbiddenRequiem/Modpack/main/atm10-manifest.json",
+      "featuredMods": [
+        { "name": "Mekanism & Generators", "category": "Alta Tecnologia", "description": "Processamento avançado de minérios x5, reatores de fusão e energia massiva." },
+        { "name": "Applied Energistics 2", "category": "Armazenamento ME", "description": "Redes quânticas de armazenamento digital e autocrafting automatizado." },
+        { "name": "Ars Nouveau", "category": "Magia Personalizada", "description": "Crie seus próprios feitiços arcanos, familiares e rituais." },
+        { "name": "Create & Addons", "category": "Engenharia Cinética", "description": "Engrenagens, trens customizados, moinhos e esteiras rotativas." },
+        { "name": "AllTheModium", "category": "Metais Místicos", "description": "Allthemodium, Vibranium e Unobtainium na jornada para a lendária ATM Star." },
+        { "name": "Mystical Agriculture", "category": "Cultivo de Recursos", "description": "Plante e colha todos os minérios e essências do jogo." },
+        { "name": "Industrial Foregoing", "category": "Automação", "description": "Fábricas automatizadas de mob grinding, processamento e laser drills." },
+        { "name": "Ender IO & Powah!", "category": "Energia & Cabos", "description": "Geração extrema de energia, cabos dimensionais e teleporte de itens." }
+      ]
+    }
+  ]
+}

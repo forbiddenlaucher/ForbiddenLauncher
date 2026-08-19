@@ -1,0 +1,1045 @@
+/* Gothic & Cosmic Cards */
+.gothic-panel {
+  background: var(--bg-panel);
+  border: 1px solid var(--border-subtle);
+  border-radius: 6px;
+  padding: 22px;
+  backdrop-filter: blur(12px);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
+  position: relative;
+}
+
+.panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 18px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.panel-title {
+  font-family: var(--font-serif);
+  font-size: 17px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  color: var(--text-main);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.panel-subtitle {
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+/* =========================================================================
+   DUAL SPLIT-CARD SELECTOR (HUB VIEW)
+   ========================================================================= */
+.hub-container {
+  display: flex;
+  flex: 1;
+  gap: 20px;
+  height: 100%;
+  padding-bottom: 10px;
+}
+
+.modpack-hub-card {
+  flex: 1;
+  border-radius: 8px;
+  padding: 30px 24px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  position: relative;
+  overflow: hidden;
+  border: 1px solid var(--border-subtle);
+  backdrop-filter: blur(14px);
+  transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.7);
+  cursor: pointer;
+}
+
+.modpack-hub-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  opacity: 0.15;
+  transition: opacity 0.4s ease, transform 0.4s ease;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.card-content-wrap {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  justify-content: space-between;
+}
+
+/* Forbidden Requiem Card Theme (Medieval Fortress & Torchlight Night) */
+.card-forbidden {
+  background: linear-gradient(180deg, rgba(15, 12, 18, 0.4) 0%, rgba(12, 9, 14, 0.6) 45%, rgba(7, 6, 9, 0.96) 100%),
+              url('../assets/images/forbidden_bg.png') center 25% / cover no-repeat;
+  border-color: rgba(245, 158, 11, 0.35);
+  background-blend-mode: multiply;
+  transition: all 0.45s cubic-bezier(0.25, 1, 0.5, 1);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8), inset 0 0 60px rgba(0, 0, 0, 0.6);
+}
+
+.card-forbidden::before {
+  background: radial-gradient(circle at 50% 30%, rgba(245, 158, 11, 0.25) 0%, rgba(184, 0, 0, 0.2) 40%, rgba(10, 8, 16, 0.5) 75%, transparent 95%);
+}
+
+.card-forbidden:hover {
+  background: linear-gradient(180deg, rgba(12, 9, 15, 0.15) 0%, rgba(12, 9, 14, 0.45) 50%, rgba(7, 6, 9, 0.9) 100%),
+              url('../assets/images/forbidden_bg.png') center 22% / cover no-repeat;
+  background-blend-mode: normal;
+  border-color: rgba(245, 158, 11, 0.7);
+  box-shadow: 0 0 45px rgba(245, 158, 11, 0.35), 0 12px 50px rgba(0, 0, 0, 0.9);
+}
+
+.card-forbidden .pack-badge {
+  background: rgba(184, 0, 0, 0.25);
+  border: 1px solid rgba(245, 158, 11, 0.6);
+  color: #fbbf24;
+  text-shadow: 0 0 10px rgba(245, 158, 11, 0.7);
+  backdrop-filter: blur(8px);
+}
+
+.card-forbidden .pack-title {
+  font-family: var(--font-serif);
+  font-size: 29px;
+  font-weight: 900;
+  letter-spacing: 3px;
+  color: #ffffff;
+  text-shadow: 0 0 25px rgba(245, 158, 11, 0.6), 0 0 40px rgba(184, 0, 0, 0.5), 0 3px 12px rgba(0, 0, 0, 0.95);
+}
+
+.card-forbidden .pack-chapter {
+  font-family: var(--font-serif);
+  font-size: 13px;
+  letter-spacing: 2.5px;
+  color: #f59e0b;
+  text-shadow: 0 0 12px rgba(245, 158, 11, 0.5);
+  margin-top: 5px;
+  font-weight: 700;
+}
+
+.card-forbidden .btn-action {
+  background: linear-gradient(180deg, #b80000 0%, #680000 100%);
+  border: 1px solid #ff4747;
+  box-shadow: 0 0 25px rgba(184, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+
+.card-forbidden .btn-action:hover {
+  background: linear-gradient(180deg, #d30000 0%, #8a0303 100%);
+  box-shadow: 0 0 35px rgba(245, 158, 11, 0.6), 0 0 45px rgba(229, 9, 20, 0.8), inset 0 1px 0 rgba(255, 255, 255, 0.5);
+  border-color: #fbbf24;
+}
+
+/* All The Mods 10 Card Theme */
+.card-atm10 {
+  background: linear-gradient(180deg, rgba(8, 14, 24, 0.65) 0%, rgba(6, 8, 14, 0.92) 100%),
+              url('../assets/images/atm10_bg.jpg') center center / cover no-repeat;
+  border-color: var(--atm-border);
+  background-blend-mode: multiply;
+  transition: all 0.45s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.card-atm10::before {
+  background: radial-gradient(circle at 50% 35%, rgba(0, 212, 255, 0.25) 0%, rgba(34, 197, 94, 0.15) 50%, transparent 85%);
+}
+
+.card-atm10:hover {
+  background: linear-gradient(180deg, rgba(8, 14, 24, 0.3) 0%, rgba(6, 8, 14, 0.82) 100%),
+              url('../assets/images/atm10_bg.jpg') center center / cover no-repeat;
+  background-blend-mode: normal;
+}
+
+.card-atm10 .pack-badge {
+  background: rgba(0, 212, 255, 0.2);
+  border: 1px solid rgba(56, 225, 255, 0.6);
+  color: #70d8ff;
+  text-shadow: 0 0 8px rgba(0, 212, 255, 0.6);
+}
+
+.card-atm10 .pack-title {
+  font-family: var(--font-sans);
+  font-size: 28px;
+  font-weight: 900;
+  letter-spacing: 2px;
+  color: #ffffff;
+  text-shadow: 0 0 20px var(--atm-cyan-glow), 0 2px 10px rgba(0,0,0,0.9);
+}
+
+.card-atm10 .pack-chapter {
+  font-family: var(--font-sans);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  color: var(--atm-gold);
+  margin-top: 4px;
+}
+
+.card-atm10 .btn-action {
+  background: linear-gradient(180deg, #0284c7 0%, #0369a1 100%);
+  border: 1px solid #38bdf8;
+  box-shadow: 0 0 25px rgba(14, 165, 233, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+
+.card-atm10 .btn-action:hover {
+  background: linear-gradient(180deg, #0ea5e9 0%, #0284c7 100%);
+  box-shadow: 0 0 35px rgba(56, 189, 248, 0.8), inset 0 1px 0 rgba(255, 255, 255, 0.4);
+}
+
+/* =========================================================================
+   HOVER FADE INTERACTION EFFECT
+   ========================================================================= */
+.hub-container:hover .modpack-hub-card {
+  opacity: 0.5;
+  transform: scale(0.98);
+  flex: 0.8;
+}
+
+.hub-container .modpack-hub-card:hover {
+  opacity: 1 !important;
+  transform: scale(1.02) !important;
+  flex: 1.35 !important;
+  z-index: 10;
+}
+
+.hub-container .modpack-hub-card:hover::before {
+  opacity: 0.4;
+  transform: scale(1.08);
+}
+
+/* Badges & Text Details */
+.pack-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  margin-bottom: 12px;
+  align-self: flex-start;
+}
+
+.pack-tagline {
+  font-size: 13px;
+  color: var(--text-main);
+  line-height: 1.5;
+  margin-top: 14px;
+  font-style: italic;
+  letter-spacing: 0.5px;
+}
+
+.pack-specs {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 16px;
+}
+
+.spec-chip {
+  font-size: 10px;
+  font-weight: 600;
+  padding: 4px 8px;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: var(--text-muted);
+}
+
+/* Action Area in Card */
+.card-action-box {
+  margin-top: 24px;
+}
+
+.btn-action {
+  width: 100%;
+  height: 50px;
+  border-radius: 4px;
+  color: #ffffff;
+  font-family: var(--font-serif);
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  transition: all 0.25s ease;
+}
+
+.btn-action.state-running {
+  background: #2b2833 !important;
+  border-color: #4b4657 !important;
+  box-shadow: none !important;
+  cursor: default;
+}
+
+/* Card Progress Box */
+.card-progress-box {
+  margin-top: 10px;
+  display: none;
+}
+
+.card-progress-box.active {
+  display: block;
+}
+
+.card-progress-track {
+  width: 100%;
+  height: 6px;
+  background: rgba(0, 0, 0, 0.6);
+  border-radius: 3px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  margin: 6px 0;
+}
+
+.card-progress-fill {
+  height: 100%;
+  width: 0%;
+  background: #ffffff;
+  border-radius: 3px;
+  transition: width 0.2s ease;
+}
+
+.card-forbidden .card-progress-fill {
+  background: linear-gradient(90deg, #8a0303, #e50914, #c59b27);
+}
+
+.card-atm10 .card-progress-fill {
+  background: linear-gradient(90deg, #0284c7, #00d4ff, #ffd700);
+}
+
+/* Card Server Ticker */
+.card-server-status {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-top: 12px;
+}
+
+.status-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--status-online);
+  box-shadow: 0 0 6px var(--status-online);
+}
+
+.status-dot.offline {
+  background: var(--status-offline);
+  box-shadow: 0 0 6px var(--status-offline);
+}
+
+/* Modpack Tabs & Grid */
+.modpack-tab-switch {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.btn-pack-switch {
+  padding: 8px 18px;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: var(--text-muted);
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-pack-switch.active {
+  background: rgba(255, 255, 255, 0.15);
+  border-color: #ffffff;
+  color: #ffffff;
+}
+
+.modpack-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 14px;
+}
+
+.mod-card {
+  background: rgba(18, 16, 23, 0.75);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 6px;
+  padding: 14px;
+  transition: all 0.2s ease;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.mod-card:hover {
+  background: rgba(26, 23, 33, 0.9);
+  border-color: rgba(255, 255, 255, 0.3);
+  transform: translateY(-2px);
+}
+
+.mod-name {
+  font-size: 13px;
+  font-weight: 700;
+  color: #fff;
+}
+
+.mod-tag {
+  font-size: 9px;
+  padding: 2px 6px;
+  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--text-muted);
+  text-transform: uppercase;
+}
+
+.mod-desc {
+  font-size: 11px;
+  color: var(--text-muted);
+  line-height: 1.4;
+  margin-top: 6px;
+}
+
+/* Console Logs */
+.console-box {
+  flex: 1;
+  background: #040405;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 4px;
+  padding: 12px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: #d1d5db;
+  overflow-y: auto;
+  line-height: 1.5;
+  height: 420px;
+}
+
+.log-line { margin-bottom: 2px; }
+.log-tag-INFO { color: #60a5fa; }
+.log-tag-WARN { color: #f59e0b; }
+.log-tag-ERROR { color: #ef4444; font-weight: bold; }
+.log-tag-GAME { color: #e2dcd2; }
+
+/* =========================================================================
+   SETTINGS VIEW - HIGH-END MODULAR DESIGN
+   ========================================================================= */
+.settings-container {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  max-width: 1060px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.settings-main-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 20px;
+  background: rgba(14, 12, 18, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  backdrop-filter: blur(12px);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
+}
+
+.btn-save-main {
+  width: auto;
+  height: 42px;
+  padding: 0 24px;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  background: linear-gradient(180deg, #b80000 0%, #700000 100%);
+  border: 1px solid #ff4747;
+  box-shadow: 0 0 20px rgba(184, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.3);
+  color: #fff;
+  border-radius: 5px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  transition: all 0.25s ease;
+}
+
+.btn-save-main:hover {
+  background: linear-gradient(180deg, #d30000 0%, #8a0303 100%);
+  box-shadow: 0 0 30px rgba(229, 9, 20, 0.8), inset 0 1px 0 rgba(255, 255, 255, 0.5);
+  transform: translateY(-1px);
+}
+
+.settings-grid-layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+}
+
+.settings-card {
+  background: rgba(13, 11, 17, 0.82);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  padding: 20px;
+  backdrop-filter: blur(14px);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+  transition: all 0.3s ease;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.settings-card:hover {
+  border-color: rgba(255, 255, 255, 0.18);
+  box-shadow: 0 10px 35px rgba(0, 0, 0, 0.6);
+  transform: translateY(-2px);
+}
+
+.settings-card-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 16px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.settings-card-tag {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  padding: 3px 8px;
+  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--text-muted);
+  text-transform: uppercase;
+}
+
+.settings-card-tag.tag-fr {
+  background: rgba(184, 0, 0, 0.2);
+  border: 1px solid rgba(184, 0, 0, 0.5);
+  color: #ff5e5e;
+}
+
+.settings-card-tag.tag-atm {
+  background: rgba(0, 212, 255, 0.15);
+  border: 1px solid rgba(0, 212, 255, 0.5);
+  color: var(--atm-cyan-bright);
+}
+
+.settings-card-title {
+  font-family: var(--font-serif);
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: #ffffff;
+}
+
+/* Player Profile Card */
+.profile-inner-flex {
+  display: flex;
+  gap: 18px;
+  align-items: center;
+}
+
+.profile-avatar-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.avatar-frame {
+  width: 68px;
+  height: 68px;
+  border-radius: 8px;
+  padding: 3px;
+  background: linear-gradient(135deg, rgba(245, 158, 11, 0.6) 0%, rgba(184, 0, 0, 0.6) 100%);
+  box-shadow: 0 0 20px rgba(245, 158, 11, 0.3);
+}
+
+.avatar-frame img {
+  width: 100%;
+  height: 100%;
+  border-radius: 6px;
+  image-rendering: pixelated;
+  background: #0a090d;
+}
+
+.avatar-badge {
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: var(--status-online);
+  white-space: nowrap;
+}
+
+.profile-inputs-box {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.input-glow-wrap {
+  position: relative;
+}
+
+.input-gothic {
+  background: rgba(6, 5, 8, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 5px;
+  padding: 10px 14px;
+  color: #fff;
+  font-size: 13px;
+  outline: none;
+  width: 100%;
+  transition: all 0.2s ease;
+}
+
+.input-gothic:focus {
+  border-color: #f59e0b;
+  box-shadow: 0 0 14px rgba(245, 158, 11, 0.35);
+}
+
+/* RAM Control Box & Sliders */
+.ram-control-box {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.ram-header-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.ram-label-text {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.ram-badge-val {
+  font-size: 13px;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 4px;
+  background: rgba(0, 0, 0, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #fff;
+}
+
+.card-ram-fr .ram-badge-val {
+  color: #fbbf24;
+  border-color: rgba(245, 158, 11, 0.4);
+  text-shadow: 0 0 8px rgba(245, 158, 11, 0.5);
+}
+
+.card-ram-atm .ram-badge-val {
+  color: var(--atm-cyan-bright);
+  border-color: rgba(0, 212, 255, 0.4);
+  text-shadow: 0 0 8px rgba(0, 212, 255, 0.5);
+}
+
+.slider-track-wrap {
+  padding: 6px 0;
+}
+
+.range-slider {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 6px;
+  background: #191620;
+  border-radius: 3px;
+  outline: none;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.range-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #ffffff;
+  cursor: pointer;
+  box-shadow: 0 0 12px rgba(255, 255, 255, 0.7);
+  transition: all 0.15s ease;
+}
+
+.range-slider.slider-fr::-webkit-slider-thumb {
+  background: #f59e0b;
+  box-shadow: 0 0 14px rgba(245, 158, 11, 0.8);
+}
+
+.range-slider.slider-atm::-webkit-slider-thumb {
+  background: var(--atm-cyan-bright);
+  box-shadow: 0 0 14px rgba(0, 212, 255, 0.8);
+}
+
+.range-slider::-webkit-slider-thumb:hover {
+  transform: scale(1.2);
+}
+
+.ram-presets-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 4px;
+}
+
+.preset-label {
+  font-size: 10px;
+  color: var(--text-muted);
+  font-weight: 600;
+}
+
+.btn-ram-preset {
+  padding: 4px 10px;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: var(--text-muted);
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-ram-preset:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+.btn-ram-preset.active {
+  background: rgba(255, 255, 255, 0.14);
+  color: #fff;
+  border-color: #f59e0b;
+  box-shadow: 0 0 10px rgba(245, 158, 11, 0.3);
+}
+
+.card-ram-atm .btn-ram-preset.active {
+  border-color: var(--atm-cyan-bright);
+  box-shadow: 0 0 10px rgba(0, 212, 255, 0.3);
+}
+
+/* Java Status Box */
+.java-status-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.java-status-item {
+  background: rgba(0, 0, 0, 0.45);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 6px;
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.java-status-title {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 12px;
+}
+
+.badge-status-ok {
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--status-online);
+}
+
+.java-status-desc {
+  font-size: 10px;
+  color: var(--text-muted);
+}
+
+/* Instance Folder Cards */
+.folders-dual-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+.folder-action-card {
+  background: rgba(0, 0, 0, 0.45);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 6px;
+  padding: 14px 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+
+.folder-path-text {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--text-muted);
+  word-break: break-all;
+}
+
+/* Modal Dialog */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(6px);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+}
+
+.modal-overlay.active { display: flex; }
+
+.modal-card {
+  width: 420px;
+  background: #0d0c11;
+  border: 1px solid var(--border-subtle);
+  border-radius: 6px;
+  padding: 24px;
+  box-shadow: 0 0 40px rgba(0, 0, 0, 0.9);
+  text-align: center;
+}
+
+/* Toggle Switch Component */
+.toggle-switch {
+  position: relative;
+  display: inline-block;
+  width: 44px;
+  height: 24px;
+  flex-shrink: 0;
+}
+
+.toggle-switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.toggle-slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(255, 255, 255, 0.12);
+  transition: 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+  border-radius: 24px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.toggle-slider:before {
+  position: absolute;
+  content: "";
+  height: 16px;
+  width: 16px;
+  left: 3px;
+  bottom: 3px;
+  background-color: #ffffff;
+  transition: 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+  border-radius: 50%;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+}
+
+.toggle-switch input:checked + .toggle-slider {
+  background-color: #10b981;
+  border-color: #10b981;
+  box-shadow: 0 0 10px rgba(16, 185, 129, 0.4);
+}
+
+.toggle-switch input:checked + .toggle-slider:before {
+  transform: translateX(20px);
+}
+
+/* Secondary Button Styles */
+.btn-secondary {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #e2e8f0;
+  border-radius: 4px;
+  padding: 6px 14px;
+  font-family: var(--font-sans);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s ease;
+}
+
+.btn-secondary:hover {
+  background: rgba(255, 255, 255, 0.14);
+  border-color: rgba(255, 255, 255, 0.35);
+  color: #ffffff;
+  box-shadow: 0 0 12px rgba(255, 255, 255, 0.15);
+}
+
+.input-with-btn {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.input-with-btn .input-gothic {
+  flex: 1;
+}
+
+/* Server Status Pills */
+.server-status-pill {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  padding: 3px 8px;
+  border-radius: 12px;
+  background: rgba(34, 197, 94, 0.15);
+  border: 1px solid rgba(34, 197, 94, 0.4);
+  color: #4ade80;
+}
+
+.server-status-pill.offline {
+  background: rgba(239, 68, 68, 0.15);
+  border-color: rgba(239, 68, 68, 0.4);
+  color: #f87171;
+}
+
+/* Auth Switcher */
+.auth-type-switch {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.btn-auth-type {
+  flex: 1;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: var(--text-muted);
+  border-radius: 6px;
+  padding: 8px 12px;
+  font-family: var(--font-sans);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all 0.25s ease;
+}
+
+.btn-auth-type:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+}
+
+.btn-auth-type.active {
+  background: rgba(255, 255, 255, 0.14);
+  border-color: rgba(255, 255, 255, 0.35);
+  color: #ffffff;
+}
+
+.btn-auth-type.btn-auth-ms.active {
+  background: linear-gradient(135deg, rgba(0, 164, 239, 0.2) 0%, rgba(255, 185, 0, 0.15) 100%);
+  border-color: #ffd700;
+  color: #ffd700;
+  box-shadow: 0 0 15px rgba(255, 215, 0, 0.25);
+}
+
+/* Golden Crown Avatar */
+.avatar-frame.golden-crown {
+  background: linear-gradient(135deg, #ffd700 0%, #f59e0b 50%, #b45309 100%) !important;
+  box-shadow: 0 0 25px rgba(255, 215, 0, 0.8), 0 0 45px rgba(245, 158, 11, 0.4) !important;
+  border: 2px solid #fff59d !important;
+  animation: goldPulse 2.2s infinite ease-in-out;
+  position: relative;
+}
+
+.avatar-frame.golden-crown::after {
+  content: '👑';
+  position: absolute;
+  top: -12px;
+  right: -8px;
+  font-size: 16px;
+  filter: drop-shadow(0 0 6px rgba(255, 215, 0, 0.9));
+}
+
+.player-avatar.golden-crown {
+  border: 2px solid #ffd700 !important;
+  box-shadow: 0 0 14px rgba(255, 215, 0, 0.8) !important;
+}
+
+@keyframes goldPulse {
+  0% { box-shadow: 0 0 15px rgba(255, 215, 0, 0.6), 0 0 30px rgba(245, 158, 11, 0.3); }
+  50% { box-shadow: 0 0 28px rgba(255, 215, 0, 0.95), 0 0 55px rgba(245, 158, 11, 0.6); }
+  100% { box-shadow: 0 0 15px rgba(255, 215, 0, 0.6), 0 0 30px rgba(245, 158, 11, 0.3); }
+}
+
+.avatar-badge.badge-premium {
+  color: #ffd700 !important;
+  font-weight: 800 !important;
+  text-shadow: 0 0 10px rgba(255, 215, 0, 0.8) !important;
+}
+
+.btn-ms-login {
+  width: 100%;
+  padding: 10px 16px;
+  background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%);
+  border: 1px solid #38bdf8;
+  color: #ffffff;
+  border-radius: 6px;
+  font-family: var(--font-sans);
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  transition: all 0.25s ease;
+  box-shadow: 0 0 15px rgba(56, 189, 248, 0.2);
+}
+
+.btn-ms-login:hover {
+  background: linear-gradient(180deg, #0284c7 0%, #0369a1 100%);
+  border-color: #7dd3fc;
+  box-shadow: 0 0 25px rgba(56, 189, 248, 0.5);
+  transform: translateY(-1px);
+}
