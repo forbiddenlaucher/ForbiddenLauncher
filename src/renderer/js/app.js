@@ -822,11 +822,21 @@ document.addEventListener('DOMContentLoaded', async () => {
     logsBuffer = [];
   };
 
-  btnExportLogs.onclick = () => {
-    navigator.clipboard.writeText(logsBuffer.join('\n'));
-    btnExportLogs.textContent = 'Copiado!';
-    setTimeout(() => btnExportLogs.textContent = 'Copiar Logs', 1500);
-  };
+  // --- Community Discord Buttons ---
+  const btnDiscordForbidden = document.getElementById('btn-discord-forbidden');
+  const btnDiscordAtm = document.getElementById('btn-discord-atm');
+
+  if (btnDiscordForbidden) {
+    btnDiscordForbidden.addEventListener('click', () => {
+      api.openExternal('https://discord.gg/mCHN5PfUDF');
+    });
+  }
+
+  if (btnDiscordAtm) {
+    btnDiscordAtm.addEventListener('click', () => {
+      api.openExternal('https://discord.gg/SFjzXRx7mv');
+    });
+  }
 
   await init();
   setInterval(refreshAllServers, 30000);

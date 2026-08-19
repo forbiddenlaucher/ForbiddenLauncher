@@ -291,6 +291,10 @@ function registerIpcHandlers(mainWindow) {
     launcherUpdater.openDownloadPage(url);
   });
 
+  ipcMain.handle('shell:open-external', (event, url) => {
+    if (url) shell.openExternal(url);
+  });
+
   ipcMain.handle('shell:open-instance-folder', (event, packId) => {
     const instConfig = configStore.getInstanceConfig(packId);
     if (!fs.existsSync(instConfig.gameDir)) {
