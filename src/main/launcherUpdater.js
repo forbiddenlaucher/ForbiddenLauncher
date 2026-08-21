@@ -155,30 +155,29 @@ class LauncherUpdater {
             fileStream.close(async () => {
               try {
                 // Wait briefly for file handle release
-                await new Promise(r => setTimeout(r, 400));
+                await new Promise(r => setTimeout(r, 500));
 
-                // Use Electron's native shell.openPath to trigger Windows ShellExecute (UAC elevation friendly)
-                const openErr = await shell.openPath(installerPath);
-                if (openErr) {
-                  // Fallback to start command
-                  const { exec } = require('child_process');
-                  exec(`start "" "${installerPath}"`, () => {});
-                }
+                const { exec } = require('child_process');
+                // Launch installer triggering the Windows UAC Admin Dialog (Sim / Não)
+                exec(`powershell -NoProfile -Command "Start-Process -FilePath '${installerPath}' -Verb RunAs"`, (err) => {
+                  if (err) {
+                    // Fallback to standard openPath
+                    shell.openPath(installerPath);
+                  }
+                });
 
-                // Quit app cleanly after launching installer
+                // Quit app cleanly so installer can update without file locks
                 setTimeout(() => {
                   if (app) {
                     app.isQuitting = true;
                     app.quit();
                   }
-                }, 800);
+                }, 1000);
 
                 resolve(true);
               } catch (e) {
                 console.error('Erro iniciando instalador:', e);
-                try {
-                  shell.openPath(installerPath);
-                } catch (err) {}
+                shell.openPath(installerPath);
                 resolve(true);
               }
             });
