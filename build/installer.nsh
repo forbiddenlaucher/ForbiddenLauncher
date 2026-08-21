@@ -1,2 +1,6 @@
+!macro customWelcomePage
+  !insertmacro MUI_PAGE_WELCOME
+!macroend
+
 !macro customInit
 !macroend
