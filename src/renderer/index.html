@@ -346,9 +346,9 @@
             <div>
               <h2 class="panel-title" style="font-size: 20px;">
                 <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg>
-                CONFIGURAÇÕES & PERFORMANCE DO REINO
+                CONFIGURAÇÕES DO REINO
               </h2>
-              <div class="panel-subtitle">Personalização de perfil, alocação de memória RAM e instâncias</div>
+              <div class="panel-subtitle">Personalização de perfil, alocação de memória RAM, modos de economia e atualizações</div>
             </div>
             <button class="btn-action btn-save-main" id="btn-save-settings">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M17 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V7l-4-4zm-5 16c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3zm3-10H5V5h10v4z"/></svg>
@@ -356,9 +356,35 @@
             </button>
           </div>
 
-          <div class="settings-grid-layout">
-            <!-- CARD 1: Perfil do Jogador & Autenticação -->
-            <div class="settings-card card-player-profile">
+          <!-- Settings Sub-Tabs Navigation Bar -->
+          <div class="settings-subtabs-nav">
+            <button class="btn-subtab active" data-subtab="profile">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+              <span>Perfil & Conta</span>
+            </button>
+            <button class="btn-subtab" data-subtab="memory">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm16-4H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H8V4h12v12zm-3-7h-2V7h-2v2h-2v2h2v2h2v-2h2z"/></svg>
+              <span>Memória & Java</span>
+            </button>
+            <button class="btn-subtab" data-subtab="performance">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M13 2.05v2.02c3.95.49 7 3.85 7 7.93 0 3.21-1.89 6-4.64 7.28l1.39 1.39C19.98 19.01 22 15.74 22 12c0-5.18-3.95-9.45-9-9.95zM11 2.05C5.95 2.55 2 6.82 2 12c0 3.74 2.02 7.01 5.25 8.67l1.39-1.39C5.89 18 4 15.21 4 12c0-4.08 3.05-7.44 7-7.93v-2.02zM12 6c-3.31 0-6 2.69-6 6 0 1.95.93 3.68 2.37 4.78l1.42-1.42C9.17 14.73 8.5 13.44 8.5 12c0-1.93 1.57-3.5 3.5-3.5s3.5 1.57 3.5 3.5c0 1.44-.67 2.73-1.29 3.36l1.42 1.42C17.07 15.68 18 13.95 18 12c0-3.31-2.69-6-6-6z"/></svg>
+              <span>Performance & Recursos</span>
+            </button>
+            <button class="btn-subtab" data-subtab="folders">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M20 6h-8l-2-2H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm0 12H4V8h16v10z"/></svg>
+              <span>Diretórios & Pastas</span>
+            </button>
+            <button class="btn-subtab" data-subtab="about">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
+              <span>Sobre & Criador</span>
+            </button>
+          </div>
+
+          <!-- ========================================== -->
+          <!-- SUBTAB 1: PERFIL & CONTA                   -->
+          <!-- ========================================== -->
+          <div class="settings-subtab-pane active" id="subtab-pane-profile">
+            <div class="settings-card card-player-profile" style="width: 100%;">
               <div class="settings-card-header">
                 <span class="settings-card-tag">AUTENTICAÇÃO & PERFIL</span>
                 <h3 class="settings-card-title">Identidade do Aventureiro</h3>
@@ -435,59 +461,66 @@
                 </div>
               </div>
             </div>
+          </div>
 
-            <!-- CARD 2: Memória RAM Forbidden Requiem -->
-            <div class="settings-card card-ram-fr">
-              <div class="settings-card-header">
-                <span class="settings-card-tag tag-fr">1.7.10 • FORGE</span>
-                <h3 class="settings-card-title" style="color: #ff5e5e;">Memória: Forbidden Requiem</h3>
+          <!-- ========================================== -->
+          <!-- SUBTAB 2: MEMÓRIA & JAVA                   -->
+          <!-- ========================================== -->
+          <div class="settings-subtab-pane" id="subtab-pane-memory">
+            <div class="settings-grid-layout" style="margin-bottom: 18px;">
+              <!-- CARD: Memória RAM Forbidden Requiem -->
+              <div class="settings-card card-ram-fr">
+                <div class="settings-card-header">
+                  <span class="settings-card-tag tag-fr">1.7.10 • FORGE</span>
+                  <h3 class="settings-card-title" style="color: #ff5e5e;">Memória: Forbidden Requiem</h3>
+                </div>
+                <div class="ram-control-box">
+                  <div class="ram-header-info">
+                    <span class="ram-label-text">Alocação de RAM</span>
+                    <span class="ram-badge-val" id="ram-val-fr">4096 MB (4 GB)</span>
+                  </div>
+                  <div class="slider-track-wrap">
+                    <input type="range" class="range-slider slider-fr" id="slider-ram-fr" min="2048" max="16384" step="512" value="4096">
+                  </div>
+                  <div class="ram-presets-row">
+                    <span class="preset-label">Atalhos:</span>
+                    <button class="btn-ram-preset" data-slider="slider-ram-fr" data-val="3072">3 GB</button>
+                    <button class="btn-ram-preset active" data-slider="slider-ram-fr" data-val="4096">4 GB ★ Sugerido</button>
+                    <button class="btn-ram-preset" data-slider="slider-ram-fr" data-val="6144">6 GB</button>
+                  </div>
+                </div>
               </div>
-              <div class="ram-control-box">
-                <div class="ram-header-info">
-                  <span class="ram-label-text">Alocação de RAM</span>
-                  <span class="ram-badge-val" id="ram-val-fr">4096 MB (4 GB)</span>
+
+              <!-- CARD: Memória RAM ATM 10 -->
+              <div class="settings-card card-ram-atm">
+                <div class="settings-card-header">
+                  <span class="settings-card-tag tag-atm">1.21.1 • NEOFORGE</span>
+                  <h3 class="settings-card-title" style="color: var(--atm-cyan-bright);">Memória: All The Mods 10</h3>
                 </div>
-                <div class="slider-track-wrap">
-                  <input type="range" class="range-slider slider-fr" id="slider-ram-fr" min="2048" max="16384" step="512" value="4096">
-                </div>
-                <div class="ram-presets-row">
-                  <span class="preset-label">Atalhos:</span>
-                  <button class="btn-ram-preset" data-slider="slider-ram-fr" data-val="3072">3 GB</button>
-                  <button class="btn-ram-preset active" data-slider="slider-ram-fr" data-val="4096">4 GB ★ Sugerido</button>
-                  <button class="btn-ram-preset" data-slider="slider-ram-fr" data-val="6144">6 GB</button>
+                <div class="ram-control-box">
+                  <div class="ram-header-info">
+                    <span class="ram-label-text">Alocação de RAM</span>
+                    <span class="ram-badge-val" id="ram-val-atm">8192 MB (8 GB)</span>
+                  </div>
+                  <div class="slider-track-wrap">
+                    <input type="range" class="range-slider slider-atm" id="slider-ram-atm" min="4096" max="24576" step="512" value="8192">
+                  </div>
+                  <div class="ram-presets-row">
+                    <span class="preset-label">Atalhos:</span>
+                    <button class="btn-ram-preset" data-slider="slider-ram-atm" data-val="6144">6 GB</button>
+                    <button class="btn-ram-preset active" data-slider="slider-ram-atm" data-val="8192">8 GB ★ Sugerido</button>
+                    <button class="btn-ram-preset" data-slider="slider-ram-atm" data-val="10240">10 GB</button>
+                    <button class="btn-ram-preset" data-slider="slider-ram-atm" data-val="12288">12 GB</button>
+                  </div>
                 </div>
               </div>
             </div>
 
-            <!-- CARD 3: Memória RAM ATM 10 -->
-            <div class="settings-card card-ram-atm">
-              <div class="settings-card-header">
-                <span class="settings-card-tag tag-atm">1.21.1 • NEOFORGE</span>
-                <h3 class="settings-card-title" style="color: var(--atm-cyan-bright);">Memória: All The Mods 10</h3>
-              </div>
-              <div class="ram-control-box">
-                <div class="ram-header-info">
-                  <span class="ram-label-text">Alocação de RAM</span>
-                  <span class="ram-badge-val" id="ram-val-atm">8192 MB (8 GB)</span>
-                </div>
-                <div class="slider-track-wrap">
-                  <input type="range" class="range-slider slider-atm" id="slider-ram-atm" min="4096" max="24576" step="512" value="8192">
-                </div>
-                <div class="ram-presets-row">
-                  <span class="preset-label">Atalhos:</span>
-                  <button class="btn-ram-preset" data-slider="slider-ram-atm" data-val="6144">6 GB</button>
-                  <button class="btn-ram-preset active" data-slider="slider-ram-atm" data-val="8192">8 GB ★ Sugerido</button>
-                  <button class="btn-ram-preset" data-slider="slider-ram-atm" data-val="10240">10 GB</button>
-                  <button class="btn-ram-preset" data-slider="slider-ram-atm" data-val="12288">12 GB</button>
-                </div>
-              </div>
-            </div>
-
-            <!-- CARD 4: Ambientes Java -->
-            <div class="settings-card card-java-info">
+            <!-- CARD: Ambientes Java -->
+            <div class="settings-card card-java-info" style="width: 100%;">
               <div class="settings-card-header">
                 <span class="settings-card-tag">RUNTIMES</span>
-                <h3 class="settings-card-title">Ambientes Java Gerenciados</h3>
+                <h3 class="settings-card-title">Ambientes Java Gerenciados Automaticamente</h3>
               </div>
               <div class="java-status-list">
                 <div class="java-status-item">
@@ -506,9 +539,14 @@
                 </div>
               </div>
             </div>
+          </div>
 
-            <!-- CARD 5: Performance & Otimização do Sistema -->
-            <div class="settings-card card-eco-performance" style="grid-column: span 2;">
+          <!-- ========================================== -->
+          <!-- SUBTAB 3: PERFORMANCE & RECURSOS           -->
+          <!-- ========================================== -->
+          <div class="settings-subtab-pane" id="subtab-pane-performance">
+            <!-- CARD: Performance & Otimização do Sistema -->
+            <div class="settings-card card-eco-performance" style="width: 100%;">
               <div class="settings-card-header eco-header-wrap">
                 <div class="eco-header-left">
                   <div class="settings-header-icon-badge eco-icon-badge">
@@ -645,9 +683,13 @@
                 </div>
               </div>
             </div>
+          </div>
 
-            <!-- CARD 6: Pastas das Instâncias -->
-            <div class="settings-card card-instances-paths" style="grid-column: span 2;">
+          <!-- ========================================== -->
+          <!-- SUBTAB 4: DIRETÓRIOS & PASTAS              -->
+          <!-- ========================================== -->
+          <div class="settings-subtab-pane" id="subtab-pane-folders">
+            <div class="settings-card card-instances-paths" style="width: 100%;">
               <div class="settings-card-header">
                 <span class="settings-card-tag">DIRETÓRIOS</span>
                 <h3 class="settings-card-title">Pastas Isoladas das Instâncias</h3>
@@ -676,9 +718,50 @@
                 </div>
               </div>
             </div>
+          </div>
 
-            <!-- CARD 7: Sobre o Launcher & Atualizações -->
-            <div class="settings-card card-about-launcher" style="grid-column: span 2;">
+          <!-- ========================================== -->
+          <!-- SUBTAB 5: SOBRE & CRIADOR                  -->
+          <!-- ========================================== -->
+          <div class="settings-subtab-pane" id="subtab-pane-about">
+            <!-- Creator Showcase Card -->
+            <div class="settings-card creator-showcase-card" style="width: 100%; margin-bottom: 18px;">
+              <div class="settings-card-header" style="justify-content: space-between;">
+                <div style="display: flex; align-items: center; gap: 8px;">
+                  <span class="settings-card-tag" style="background: rgba(245,158,11,0.2); color: #ffd700; border: 1px solid rgba(245,158,11,0.5);">CRIADOR & FUNDADOR</span>
+                  <h3 class="settings-card-title" style="color: #ffd700;">Idealizador do Forbidden Requiem</h3>
+                </div>
+                <span class="creator-crown-tag">👑 DEV PRINCIPAL</span>
+              </div>
+
+              <div class="creator-showcase-body">
+                <div class="creator-avatar-wrap">
+                  <div class="creator-royal-frame">
+                    <img src="https://minotar.net/armor/body/ccbcp/120.png" onerror="this.src='https://minotar.net/avatar/ccbcp/72'" alt="ccbcp Skin" class="creator-skin-img">
+                  </div>
+                  <div class="creator-skin-nick">ccbcp</div>
+                </div>
+
+                <div class="creator-info-box">
+                  <div class="creator-headline">
+                    <span class="creator-name-txt">ccbcp</span>
+                    <span class="creator-role-badge">Dono & Desenvolvedor do Projeto</span>
+                  </div>
+                  <p class="creator-bio">
+                    Criou o <b>Forbidden Requiem</b> e o <b>Forbidden Launcher</b> com a visão de construir a melhor experiência de jogo para a comunidade brasileira de modpacks — unindo automação, downloads inteligentes, servidores dedicados e otimização máxima de desempenho.
+                  </p>
+
+                  <div class="creator-tags-row">
+                    <span class="creator-tag-chip chip-fr">⚔️ Forbidden Requiem (1.7.10)</span>
+                    <span class="creator-tag-chip chip-atm">⭐ All The Mods 10 Brasil (1.21.1)</span>
+                    <span class="creator-tag-chip chip-hub">🛡️ Forbidden Launcher Universal</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Launcher Info & Updates Card -->
+            <div class="settings-card card-about-launcher" style="width: 100%;">
               <div class="settings-card-header">
                 <span class="settings-card-tag" style="color: #60a5fa; border-color: rgba(96,165,250,0.3); background: rgba(96,165,250,0.1);">SISTEMA</span>
                 <h3 class="settings-card-title" style="color: #93c5fd;">Sobre o Forbidden Launcher & Atualizações</h3>
@@ -687,7 +770,7 @@
                 <div>
                   <div style="font-size: 13px; font-weight: 700; color: #fff; display: flex; align-items: center; gap: 8px;">
                     <span>⚔️ Forbidden Requiem Launcher</span>
-                    <span style="font-size: 11px; padding: 2px 8px; border-radius: 10px; background: rgba(96,165,250,0.15); color: #60a5fa; font-family: var(--font-mono); font-weight: 700;" id="settings-launcher-version">v1.0.1</span>
+                    <span style="font-size: 11px; padding: 2px 8px; border-radius: 10px; background: rgba(96,165,250,0.15); color: #60a5fa; font-family: var(--font-mono); font-weight: 700;" id="settings-launcher-version">v1.0.7</span>
                   </div>
                   <div style="font-size: 11px; color: var(--text-muted); margin-top: 4px;" id="settings-updater-feedback">
                     Conectado ao repositório oficial no GitHub.

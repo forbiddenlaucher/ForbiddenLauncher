@@ -184,6 +184,22 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
   });
 
+  // --- Settings Sub-Tabs Switch ---
+  const btnSubtabs = document.querySelectorAll('.btn-subtab');
+  const subtabPanes = document.querySelectorAll('.settings-subtab-pane');
+
+  btnSubtabs.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const targetSubtab = btn.getAttribute('data-subtab');
+      btnSubtabs.forEach(b => b.classList.remove('active'));
+      subtabPanes.forEach(p => p.classList.remove('active'));
+
+      btn.classList.add('active');
+      const targetPane = document.getElementById(`subtab-pane-${targetSubtab}`);
+      if (targetPane) targetPane.classList.add('active');
+    });
+  });
+
   // --- Load Config & Catalog ---
   async function init() {
     currentConfig = await api.getConfig();
