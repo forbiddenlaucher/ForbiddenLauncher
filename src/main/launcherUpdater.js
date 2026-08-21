@@ -152,23 +152,39 @@ class LauncherUpdater {
           res.pipe(fileStream);
 
           fileStream.on('finish', () => {
-            fileStream.close(() => {
+            fileStream.close(async () => {
               try {
-                // Execute new installer detached and quit current app
-                spawn(installerPath, [], { detached: true, stdio: 'ignore' }).unref();
-                if (app) {
-                  app.isQuitting = true;
-                  app.quit();
+                // Wait briefly for file handle release
+                await new Promise(r => setTimeout(r, 400));
+
+                // Use Electron's native shell.openPath to trigger Windows ShellExecute (UAC elevation friendly)
+                const openErr = await shell.openPath(installerPath);
+                if (openErr) {
+                  // Fallback to start command
+                  const { exec } = require('child_process');
+                  exec(`start "" "${installerPath}"`, () => {});
                 }
+
+                // Quit app cleanly after launching installer
+                setTimeout(() => {
+                  if (app) {
+                    app.isQuitting = true;
+                    app.quit();
+                  }
+                }, 800);
+
                 resolve(true);
               } catch (e) {
-                shell.openPath(installerPath);
+                console.error('Erro iniciando instalador:', e);
+                try {
+                  shell.openPath(installerPath);
+                } catch (err) {}
                 resolve(true);
               }
             });
           });
         }).on('error', (err) => {
-          fs.unlink(installerPath, () => {});
+          try { fs.unlinkSync(installerPath); } catch (e) {}
           reject(err);
         });
       }

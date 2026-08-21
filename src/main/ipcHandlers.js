@@ -282,9 +282,14 @@ function registerIpcHandlers(mainWindow) {
   });
 
   ipcMain.handle('updater:install', async (event, url) => {
-    return await launcherUpdater.downloadAndInstallUpdate(url, (progress) => {
-      sendToWindow('updater:progress', progress);
-    });
+    try {
+      return await launcherUpdater.downloadAndInstallUpdate(url, (progress) => {
+        sendToWindow('updater:progress', progress);
+      });
+    } catch (err) {
+      console.error('Erro na atualização do launcher:', err);
+      return { success: false, error: err.message };
+    }
   });
 
   ipcMain.handle('updater:open-download', (event, url) => {
