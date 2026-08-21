@@ -49,7 +49,17 @@
     "nsis": {
       "oneClick": false,
       "allowToChangeInstallationDirectory": true,
-      "shortcutName": "Forbidden Requiem Launcher"
+      "allowElevation": true,
+      "createDesktopShortcut": "always",
+      "createStartMenuShortcut": true,
+      "shortcutName": "Forbidden Requiem Launcher",
+      "installerSidebar": "build/installerSidebar.bmp",
+      "uninstallerSidebar": "build/uninstallerSidebar.bmp",
+      "installerHeader": "build/installerHeader.bmp",
+      "installerIcon": "src/renderer/assets/icon.png",
+      "uninstallerIcon": "src/renderer/assets/icon.png",
+      "language": "1046",
+      "include": "build/installer.nsh"
     },
     "files": [
       "src/**/*",
