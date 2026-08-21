@@ -93,6 +93,9 @@ document.addEventListener('DOMContentLoaded', async () => {
   const settingEcoMode = document.getElementById('setting-eco-mode');
   const settingLaunchAction = document.getElementById('setting-launch-action');
   const settingCloseToTray = document.getElementById('setting-close-to-tray');
+  const actionCardOptions = document.querySelectorAll('.action-card-option');
+  const ecoMasterStatus = document.getElementById('eco-master-status');
+  const ecoStatusText = document.getElementById('eco-status-text');
 
   // Auth & Profile
   const btnTypeOffline = document.getElementById('btn-type-offline');
@@ -224,12 +227,12 @@ document.addEventListener('DOMContentLoaded', async () => {
         window.particleSystem.pause();
       }
     }
-    if (settingLaunchAction) {
-      settingLaunchAction.value = currentConfig.launchAction || 'minimize-tray';
-    }
+    const lAction = currentConfig.launchAction || 'minimize-tray';
+    updateLaunchActionUI(lAction);
     if (settingCloseToTray) {
       settingCloseToTray.checked = currentConfig.closeToTray || false;
     }
+    updateEcoMasterStatus();
 
     // Check status of both modpacks
     await loadFullModLists();
@@ -834,6 +837,57 @@ document.addEventListener('DOMContentLoaded', async () => {
       btnSaveSettings.style.boxShadow = '';
     }, 1800);
   });
+
+  // --- Performance & Launch Action Handlers ---
+  function updateLaunchActionUI(val) {
+    if (settingLaunchAction) settingLaunchAction.value = val;
+    actionCardOptions.forEach(opt => {
+      if (opt.getAttribute('data-value') === val) {
+        opt.classList.add('active');
+      } else {
+        opt.classList.remove('active');
+      }
+    });
+    updateEcoMasterStatus();
+  }
+
+  function updateEcoMasterStatus() {
+    if (!ecoMasterStatus || !ecoStatusText) return;
+    const isEco = settingEcoMode && settingEcoMode.checked;
+    const lAction = settingLaunchAction ? settingLaunchAction.value : 'minimize-tray';
+
+    if (isEco) {
+      ecoMasterStatus.className = 'eco-status-pill eco-active';
+      ecoStatusText.textContent = 'MODO ECONÔMICO ATIVO';
+    } else if (lAction === 'close') {
+      ecoMasterStatus.className = 'eco-status-pill';
+      ecoStatusText.textContent = 'OTIMIZAÇÃO MÁXIMA (0 MB RAM)';
+    } else if (lAction === 'minimize-tray') {
+      ecoMasterStatus.className = 'eco-status-pill';
+      ecoStatusText.textContent = 'HIBERNAÇÃO NA BANDEJA';
+    } else {
+      ecoMasterStatus.className = 'eco-status-pill';
+      ecoStatusText.textContent = 'JANELA ATIVA';
+    }
+  }
+
+  actionCardOptions.forEach(opt => {
+    opt.addEventListener('click', () => {
+      const val = opt.getAttribute('data-value');
+      updateLaunchActionUI(val);
+    });
+  });
+
+  if (settingEcoMode) {
+    settingEcoMode.addEventListener('change', () => {
+      updateEcoMasterStatus();
+      if (settingEcoMode.checked && window.particleSystem) {
+        window.particleSystem.pause();
+      } else if (!settingEcoMode.checked && window.particleSystem) {
+        window.particleSystem.resume();
+      }
+    });
+  }
 
   // --- Logs Actions ---
   btnClearLogs.onclick = () => {
