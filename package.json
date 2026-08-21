@@ -1,6 +1,6 @@
 {
   "name": "forbidden-requiem-launcher",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "Custom Dark Fantasy Minecraft 1.7.10 Launcher for Forbidden Requiem Modpack",
   "main": "src/main/index.js",
   "scripts": {
@@ -54,7 +54,9 @@
       "createDesktopShortcut": "always",
       "createStartMenuShortcut": true,
       "shortcutName": "Forbidden Requiem Launcher",
-      "installerLanguages": ["pt_BR"],
+      "installerLanguages": [
+        "pt_BR"
+      ],
       "installerSidebar": "build/installerSidebar.bmp",
       "uninstallerSidebar": "build/uninstallerSidebar.bmp",
       "installerHeader": "build/installerHeader.bmp",
