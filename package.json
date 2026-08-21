@@ -1,6 +1,6 @@
 {
   "name": "forbidden-requiem-launcher",
-  "version": "1.1.4",
+  "version": "1.1.5",
   "description": "Custom Dark Fantasy Minecraft 1.7.10 Launcher for Forbidden Requiem Modpack",
   "main": "src/main/index.js",
   "scripts": {
