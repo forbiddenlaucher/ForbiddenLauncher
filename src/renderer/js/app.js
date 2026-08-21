@@ -262,8 +262,10 @@ document.addEventListener('DOMContentLoaded', async () => {
 
       const updateInfo = await api.checkForLauncherUpdates();
 
-      if (settingsLauncherVersion && updateInfo && updateInfo.currentVersion) {
-        settingsLauncherVersion.textContent = `v${updateInfo.currentVersion}`;
+      const titlebarAppVersion = document.getElementById('titlebar-app-version');
+      if (updateInfo && updateInfo.currentVersion) {
+        if (settingsLauncherVersion) settingsLauncherVersion.textContent = `v${updateInfo.currentVersion}`;
+        if (titlebarAppVersion) titlebarAppVersion.textContent = `v${updateInfo.currentVersion}`;
       }
 
       if (updateInfo && updateInfo.updateAvailable) {
