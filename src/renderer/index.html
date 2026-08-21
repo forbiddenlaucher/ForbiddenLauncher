@@ -118,8 +118,9 @@
           <span style="font-size:18px;">⚡</span>
           <span>NOVA ATUALIZAÇÃO DO LAUNCHER DISPONÍVEL: <b id="banner-update-version" style="color:#60a5fa; font-family:var(--font-mono); font-size:13px;">v1.0.2</b></span>
         </div>
-        <div style="display:flex; align-items:center; gap:12px;">
-          <button id="btn-banner-update" class="btn-secondary" style="background:#2563eb; border-color:#60a5fa; color:#fff; padding:6px 16px; font-size:11px; font-weight:700; cursor:pointer; box-shadow: 0 0 15px rgba(37,99,235,0.6);">BAIXAR ATUALIZAÇÃO</button>
+        <div style="display:flex; align-items:center; gap:10px;">
+          <button id="btn-banner-changelog" class="btn-secondary" style="background:rgba(255,255,255,0.08); border-color:rgba(96,165,250,0.4); color:#93c5fd; padding:6px 14px; font-size:11px; font-weight:700; cursor:pointer;">📜 VER NOVIDADES</button>
+          <button id="btn-banner-update" class="btn-secondary" style="background:#2563eb; border-color:#60a5fa; color:#fff; padding:6px 16px; font-size:11px; font-weight:700; cursor:pointer; box-shadow: 0 0 15px rgba(37,99,235,0.6);">🚀 BAIXAR ATUALIZAÇÃO</button>
           <button id="btn-banner-close" style="background:none; border:none; color:#94a3b8; cursor:pointer; font-size:18px; padding:0 4px; line-height:1;">✕</button>
         </div>
       </div>
@@ -775,16 +776,48 @@
                     Conectado ao repositório oficial no GitHub.
                   </div>
                 </div>
-                <button class="btn-secondary" id="btn-manual-check-update" style="border-color: #3b82f6; color: #93c5fd;">
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/></svg>
-                  <span>Checar Atualizações Agora</span>
-                </button>
+                <div style="display: flex; gap: 10px;">
+                  <button class="btn-secondary" id="btn-manual-view-changelog" style="border-color: rgba(255,255,255,0.2); color: #cbd5e1;">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>
+                    <span>Ver Novidades (Changelog)</span>
+                  </button>
+                  <button class="btn-secondary" id="btn-manual-check-update" style="border-color: #3b82f6; color: #93c5fd;">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/></svg>
+                    <span>Checar Atualizações Agora</span>
+                  </button>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </section>
     </main>
+  </div>
+
+  <!-- Changelog / What's New Modal -->
+  <div class="modal-overlay" id="modal-changelog" style="display: none;">
+    <div class="modal-card modal-changelog-card">
+      <div class="modal-changelog-header">
+        <div class="modal-changelog-title-wrap">
+          <img src="assets/icon.png" class="modal-changelog-emblem" alt="Forbidden Logo">
+          <div>
+            <div class="modal-changelog-badge" id="modal-changelog-badge">⚡ NOTAS DA VERSÃO</div>
+            <h3 class="modal-changelog-version" id="modal-changelog-version">Forbidden Launcher v1.1.9</h3>
+          </div>
+        </div>
+        <button class="modal-close-btn" id="btn-close-changelog" title="Fechar">✕</button>
+      </div>
+      <div class="modal-changelog-body" id="modal-changelog-body">
+        <!-- Content inserted dynamically -->
+      </div>
+      <div class="modal-changelog-actions">
+        <button class="btn-modal-cancel" id="btn-changelog-dismiss">FECHAR</button>
+        <button class="btn-primary" id="btn-changelog-install-now" style="display: none; padding: 10px 22px;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM17 13l-5 5-5-5h3V9h4v4h3z"/></svg>
+          <span id="txt-changelog-action">ATUALIZAR E INSTALAR</span>
+        </button>
+      </div>
+    </div>
   </div>
 
   <!-- Exit Modal -->

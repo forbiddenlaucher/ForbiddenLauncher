@@ -260,14 +260,108 @@ document.addEventListener('DOMContentLoaded', async () => {
     checkForLauncherUpdate();
   }
 
-  // --- Launcher Updater ---
+  // --- Launcher Updater & Changelog Modal ---
   const launcherUpdateBanner = document.getElementById('launcher-update-banner');
   const bannerUpdateVersion = document.getElementById('banner-update-version');
   const btnBannerUpdate = document.getElementById('btn-banner-update');
+  const btnBannerChangelog = document.getElementById('btn-banner-changelog');
   const btnBannerClose = document.getElementById('btn-banner-close');
   const settingsLauncherVersion = document.getElementById('settings-launcher-version');
   const settingsUpdaterFeedback = document.getElementById('settings-updater-feedback');
   const btnManualCheckUpdate = document.getElementById('btn-manual-check-update');
+  const btnManualViewChangelog = document.getElementById('btn-manual-view-changelog');
+
+  // Modal Changelog Elements
+  const modalChangelog = document.getElementById('modal-changelog');
+  const modalChangelogVersion = document.getElementById('modal-changelog-version');
+  const modalChangelogBody = document.getElementById('modal-changelog-body');
+  const btnCloseChangelog = document.getElementById('btn-close-changelog');
+  const btnChangelogDismiss = document.getElementById('btn-changelog-dismiss');
+  const btnChangelogInstallNow = document.getElementById('btn-changelog-install-now');
+
+  let latestUpdateData = null;
+
+  function renderMarkdownToHtml(markdownText) {
+    if (!markdownText || !markdownText.trim()) {
+      return `
+        <div class="changelog-highlight-box">
+          ✨ <b>Melhorias e Novidades Desta Versão:</b><br>
+          • Novo ícone 3D em alta resolução com transparência total<br>
+          • Nova arte lateral imersiva do castelo no instalador<br>
+          • Visualização integrada do Changelog (Notas de Atualização)<br>
+          • Execução e permissões otimizadas no Windows
+        </div>
+      `;
+    }
+
+    const lines = markdownText.split('\n');
+    let html = '';
+    let inList = false;
+
+    for (let rawLine of lines) {
+      let line = rawLine.trim();
+      if (!line) {
+        if (inList) { html += '</ul>'; inList = false; }
+        continue;
+      }
+
+      if (line.startsWith('### ') || line.startsWith('## ') || line.startsWith('# ')) {
+        if (inList) { html += '</ul>'; inList = false; }
+        const heading = line.replace(/^#+\s*/, '');
+        html += `<div class="changelog-section-title">🛡️ ${heading}</div>`;
+      } else if (line.startsWith('- ') || line.startsWith('* ') || line.startsWith('• ')) {
+        if (!inList) {
+          html += '<ul class="changelog-list">';
+          inList = true;
+        }
+        let item = line.substring(2);
+        item = item.replace(/\*\*(.*?)\*\*/g, '<b>$1</b>');
+        html += `<li class="changelog-list-item">${item}</li>`;
+      } else {
+        if (inList) { html += '</ul>'; inList = false; }
+        let text = line.replace(/\*\*(.*?)\*\*/g, '<b>$1</b>');
+        html += `<div class="changelog-highlight-box">${text}</div>`;
+      }
+    }
+
+    if (inList) html += '</ul>';
+    return html;
+  }
+
+  function openChangelogModal(version, notes, isUpdateAvailable = false, downloadUrl = null) {
+    if (modalChangelogVersion) {
+      modalChangelogVersion.textContent = `Forbidden Launcher v${version || '1.1.9'} • Notas da Versão`;
+    }
+    if (modalChangelogBody) {
+      modalChangelogBody.innerHTML = renderMarkdownToHtml(notes);
+    }
+    if (btnChangelogInstallNow) {
+      if (isUpdateAvailable && downloadUrl) {
+        btnChangelogInstallNow.style.display = 'inline-flex';
+        btnChangelogInstallNow.onclick = () => {
+          modalChangelog.style.display = 'none';
+          if (btnBannerUpdate) btnBannerUpdate.click();
+        };
+      } else {
+        btnChangelogInstallNow.style.display = 'none';
+      }
+    }
+    if (modalChangelog) modalChangelog.style.display = 'flex';
+  }
+
+  if (btnCloseChangelog) {
+    btnCloseChangelog.onclick = () => { if (modalChangelog) modalChangelog.style.display = 'none'; };
+  }
+  if (btnChangelogDismiss) {
+    btnChangelogDismiss.onclick = () => { if (modalChangelog) modalChangelog.style.display = 'none'; };
+  }
+
+  if (btnManualViewChangelog) {
+    btnManualViewChangelog.onclick = () => {
+      const curVer = (titlebarAppVersion && titlebarAppVersion.textContent) ? titlebarAppVersion.textContent.replace(/^v/, '') : '1.1.9';
+      openChangelogModal(curVer, (latestUpdateData && latestUpdateData.releaseNotes) || null, false);
+    };
+  }
 
   async function checkForLauncherUpdate(isManual = false) {
     try {
@@ -277,6 +371,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       }
 
       const updateInfo = await api.checkForLauncherUpdates();
+      latestUpdateData = updateInfo;
 
       const titlebarAppVersion = document.getElementById('titlebar-app-version');
       if (updateInfo && updateInfo.currentVersion) {
@@ -289,6 +384,11 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (launcherUpdateBanner) {
           launcherUpdateBanner.style.display = 'flex';
           if (bannerUpdateVersion) bannerUpdateVersion.textContent = `v${updateInfo.latestVersion}`;
+          if (btnBannerChangelog) {
+            btnBannerChangelog.onclick = () => {
+              openChangelogModal(updateInfo.latestVersion, updateInfo.releaseNotes, true, updateInfo.downloadUrl);
+            };
+          }
           if (btnBannerUpdate) {
             btnBannerUpdate.onclick = async () => {
               btnBannerUpdate.textContent = 'Baixando 0%...';
@@ -320,7 +420,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
       } else {
         if (isManual && settingsUpdaterFeedback) {
-          settingsUpdaterFeedback.textContent = `✅ Seu launcher já está na versão mais recente (v${updateInfo.currentVersion || '1.0.2'}).`;
+          settingsUpdaterFeedback.textContent = `✅ Seu launcher já está na versão mais recente (v${updateInfo.currentVersion || '1.1.9'}).`;
           settingsUpdaterFeedback.style.color = '#4ade80';
         }
       }
