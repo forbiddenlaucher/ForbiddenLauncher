@@ -1,6 +1,6 @@
 {
   "name": "forbidden-requiem-launcher",
-  "version": "1.2.1",
+  "version": "1.2.2",
   "description": "Launcher for Forbidden Requiem Modpack",
   "main": "src/main/index.js",
   "scripts": {
