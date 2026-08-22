@@ -307,6 +307,12 @@ class GameLauncher {
     if (mcVersion === '1.7.10') {
       jvmArguments.push('-Dfml.ignoreInvalidMinecraftCertificates=true');
       jvmArguments.push('-Dfml.ignorePatchDiscrepancies=true');
+      jvmArguments.push('-XX:+UseG1GC');
+      jvmArguments.push('-XX:+UnlockExperimentalVMOptions');
+      jvmArguments.push('-XX:G1NewSizePercent=20');
+      jvmArguments.push('-XX:G1ReservePercent=20');
+      jvmArguments.push('-XX:MaxGCPauseMillis=50');
+      jvmArguments.push('-XX:G1HeapRegionSize=32M');
     }
 
     // If extraJvmArgs didn't contain -cp, add it

@@ -119,23 +119,28 @@ class ForgeCore {
       });
     }
 
-    // Disable Forge splash screen to prevent white screen conflict with Angelica / Sodium modern renderers
+    // Configure Dark Fantasy Forge splash screen with active progress bars
     const configDir = path.join(gameDir, 'config');
     if (!fs.existsSync(configDir)) fs.mkdirSync(configDir, { recursive: true });
     const splashPath = path.join(configDir, 'splash.properties');
-    if (fs.existsSync(splashPath)) {
-      try {
-        let content = fs.readFileSync(splashPath, 'utf8');
-        if (content.includes('enabled=true')) {
-          content = content.replace('enabled=true', 'enabled=false');
-          fs.writeFileSync(splashPath, content, 'utf8');
-        }
-      } catch (e) {}
-    } else {
-      try {
-        fs.writeFileSync(splashPath, 'enabled=false\n', 'utf8');
-      } catch (e) {}
-    }
+    const splashContent = [
+      '#Splash screen properties',
+      'logoTexture=textures/gui/title/mojang.png',
+      'background=0x0F0C13',
+      'font=0xFFFFFF',
+      'barBackground=0x1F1626',
+      'barBorder=0xDC2626',
+      'rotate=false',
+      'bar=0xDC2626',
+      'enabled=true',
+      'resourcePackPath=resources',
+      'logoOffset=0',
+      'forgeTexture=fml:textures/gui/forge.gif',
+      'fontTexture=textures/font/ascii.png'
+    ].join('\n') + '\n';
+    try {
+      fs.writeFileSync(splashPath, splashContent, 'utf8');
+    } catch (e) {}
 
     const forgeUniversalPath = path.join(librariesDir, this.getForgeJarRelativePath());
     return { forgeUniversalPath };
