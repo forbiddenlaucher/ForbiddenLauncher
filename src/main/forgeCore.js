@@ -44,16 +44,16 @@ class ForgeCore {
         url: 'https://repo1.maven.org/maven2/org/scala-lang/scala-reflect/2.11.1/scala-reflect-2.11.1.jar'
       },
       {
-        path: path.join('org', 'scala-lang', 'scala-parser-combinators_2.11', '1.0.1', 'scala-parser-combinators_2.11-1.0.1.jar'),
-        url: 'https://repo1.maven.org/maven2/org/scala-lang/scala-parser-combinators_2.11/1.0.1/scala-parser-combinators_2.11-1.0.1.jar'
+        path: path.join('org', 'scala-lang', 'modules', 'scala-parser-combinators_2.11', '1.0.1', 'scala-parser-combinators_2.11-1.0.1.jar'),
+        url: 'https://repo1.maven.org/maven2/org/scala-lang/modules/scala-parser-combinators_2.11/1.0.1/scala-parser-combinators_2.11-1.0.1.jar'
       },
       {
-        path: path.join('org', 'scala-lang', 'scala-swing_2.11', '1.0.1', 'scala-swing_2.11-1.0.1.jar'),
-        url: 'https://repo1.maven.org/maven2/org/scala-lang/scala-swing_2.11/1.0.1/scala-swing_2.11-1.0.1.jar'
+        path: path.join('org', 'scala-lang', 'modules', 'scala-swing_2.11', '1.0.1', 'scala-swing_2.11-1.0.1.jar'),
+        url: 'https://repo1.maven.org/maven2/org/scala-lang/modules/scala-swing_2.11/1.0.1/scala-swing_2.11-1.0.1.jar'
       },
       {
-        path: path.join('org', 'scala-lang', 'scala-xml_2.11', '1.0.2', 'scala-xml_2.11-1.0.2.jar'),
-        url: 'https://repo1.maven.org/maven2/org/scala-lang/scala-xml_2.11/1.0.2/scala-xml_2.11-1.0.2.jar'
+        path: path.join('org', 'scala-lang', 'modules', 'scala-xml_2.11', '1.0.2', 'scala-xml_2.11-1.0.2.jar'),
+        url: 'https://repo1.maven.org/maven2/org/scala-lang/modules/scala-xml_2.11/1.0.2/scala-xml_2.11-1.0.2.jar'
       },
       {
         path: path.join('com', 'typesafe', 'akka', 'akka-actor_2.11', '2.3.3', 'akka-actor_2.11-2.3.3.jar'),
@@ -66,6 +66,14 @@ class ForgeCore {
       {
         path: path.join('java3d', 'vecmath', '1.5.2', 'vecmath-1.5.2.jar'),
         url: 'https://libraries.minecraft.net/java3d/vecmath/1.5.2/vecmath-1.5.2.jar'
+      },
+      {
+        path: path.join('com', 'google', 'guava', 'guava', '17.0', 'guava-17.0.jar'),
+        url: 'https://repo1.maven.org/maven2/com/google/guava/guava/17.0/guava-17.0.jar'
+      },
+      {
+        path: path.join('org', 'apache', 'commons', 'commons-lang3', '3.12.0', 'commons-lang3-3.12.0.jar'),
+        url: 'https://repo1.maven.org/maven2/org/apache/commons/commons-lang3/3.12.0/commons-lang3-3.12.0.jar'
       },
       {
         path: path.join('net', 'sf', 'trove4j', 'trove4j', '3.0.3', 'trove4j-3.0.3.jar'),

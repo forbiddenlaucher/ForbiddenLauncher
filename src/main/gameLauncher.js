@@ -236,7 +236,9 @@ class GameLauncher {
     }
 
     // Top-level version overrides mainClass if set
-    if (versionChain.length > 0 && versionChain[0].mainClass) {
+    if (mcVersion === '1.7.10') {
+      mainClass = 'net.minecraft.launchwrapper.Launch';
+    } else if (versionChain.length > 0 && versionChain[0].mainClass) {
       mainClass = versionChain[0].mainClass;
     }
 
