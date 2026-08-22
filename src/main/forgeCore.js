@@ -119,6 +119,24 @@ class ForgeCore {
       });
     }
 
+    // Disable Forge splash screen to prevent white screen conflict with Angelica / Sodium modern renderers
+    const configDir = path.join(gameDir, 'config');
+    if (!fs.existsSync(configDir)) fs.mkdirSync(configDir, { recursive: true });
+    const splashPath = path.join(configDir, 'splash.properties');
+    if (fs.existsSync(splashPath)) {
+      try {
+        let content = fs.readFileSync(splashPath, 'utf8');
+        if (content.includes('enabled=true')) {
+          content = content.replace('enabled=true', 'enabled=false');
+          fs.writeFileSync(splashPath, content, 'utf8');
+        }
+      } catch (e) {}
+    } else {
+      try {
+        fs.writeFileSync(splashPath, 'enabled=false\n', 'utf8');
+      } catch (e) {}
+    }
+
     const forgeUniversalPath = path.join(librariesDir, this.getForgeJarRelativePath());
     return { forgeUniversalPath };
   }
