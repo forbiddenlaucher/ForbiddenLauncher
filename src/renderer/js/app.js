@@ -119,9 +119,15 @@ document.addEventListener('DOMContentLoaded', async () => {
     line.textContent = `[${time}] ${tag}[${level || 'INFO'}] ${message}`;
     if (consoleLogsContainer) {
       consoleLogsContainer.appendChild(line);
+      if (consoleLogsContainer.children.length > 400) {
+        consoleLogsContainer.removeChild(consoleLogsContainer.children[0]);
+      }
       consoleLogsContainer.scrollTop = consoleLogsContainer.scrollHeight;
     }
     logsBuffer.push(line.textContent);
+    if (logsBuffer.length > 1000) {
+      logsBuffer.shift();
+    }
   }
 
   function updateInstanceButtonUI(packId, state) {

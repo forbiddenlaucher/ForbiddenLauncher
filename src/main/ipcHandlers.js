@@ -179,6 +179,9 @@ function registerIpcHandlers(mainWindow) {
           maxRam: instConfig.maxRam,
           javaPathOverride: instConfig.customJavaPath
         },
+        (log) => {
+          sendToWindow('game:log', { packId, ...log });
+        },
         (status) => {
           sendToWindow('game:status', { packId, status });
           const launchAction = configStore.get('launchAction') || 'minimize-tray';
