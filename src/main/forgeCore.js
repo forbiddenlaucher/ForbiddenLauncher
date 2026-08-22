@@ -119,27 +119,12 @@ class ForgeCore {
       });
     }
 
-    // Configure Dark Fantasy Forge splash screen with active progress bars
+    // Disable Forge splash screen to prevent white flash / Mojang white background logo on launch
     const configDir = path.join(gameDir, 'config');
     if (!fs.existsSync(configDir)) fs.mkdirSync(configDir, { recursive: true });
     const splashPath = path.join(configDir, 'splash.properties');
-    const splashContent = [
-      '#Splash screen properties',
-      'logoTexture=textures/gui/title/mojang.png',
-      'background=0x0F0C13',
-      'font=0xFFFFFF',
-      'barBackground=0x1F1626',
-      'barBorder=0xDC2626',
-      'rotate=false',
-      'bar=0xDC2626',
-      'enabled=true',
-      'resourcePackPath=resources',
-      'logoOffset=0',
-      'forgeTexture=fml:textures/gui/forge.gif',
-      'fontTexture=textures/font/ascii.png'
-    ].join('\n') + '\n';
     try {
-      fs.writeFileSync(splashPath, splashContent, 'utf8');
+      fs.writeFileSync(splashPath, '#Splash screen properties\nenabled=false\n', 'utf8');
     } catch (e) {}
 
     const forgeUniversalPath = path.join(librariesDir, this.getForgeJarRelativePath());
