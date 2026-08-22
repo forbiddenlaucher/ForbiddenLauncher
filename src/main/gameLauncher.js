@@ -305,6 +305,7 @@ class GameLauncher {
     ];
 
     if (mcVersion === '1.7.10') {
+      jvmArguments.push('-noverify');
       jvmArguments.push('-Dfml.ignoreInvalidMinecraftCertificates=true');
       jvmArguments.push('-Dfml.ignorePatchDiscrepancies=true');
       jvmArguments.push('-XX:+UseG1GC');
