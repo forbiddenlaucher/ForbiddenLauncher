@@ -79,8 +79,8 @@ try {
 console.log(`\n🌐 Publicando Release oficial no GitHub Releases...`);
 const body = JSON.stringify({
   tag_name: `v${newVersion}`,
-  name: `Forbidden Requiem Launcher v${newVersion}`,
-  body: `## ⚔️ Forbidden Requiem Launcher v${newVersion}\n\nLançamento oficial da versão v${newVersion}.`,
+  name: `Forbidden Requiem Launcher v${newVersion} - Discord Rich Presence`,
+  body: `## ⚔️ Forbidden Requiem Launcher v${newVersion}\n\n### 🌟 Novidades & Recursos desta Versão:\n- 🎮 **Discord Rich Presence (RPC) Nativo**:\n  - Exibição dinâmica do modpack ativo (**Forbidden Requiem 1.7.10** ou **All The Mods 10 1.21.1**).\n  - Detecção automática de servidor com IP e contagem de jogadores online em tempo real (\`👥 35/100\`).\n  - Detecção de mundo e dimensão em Singleplayer (\`Overworld\`, \`Twilight Forest\`, \`Nether\`, \`The End\`, etc.).\n  - Botões interativos no perfil do Discord com links diretos para a comunidade oficial.\n  - Opção nas Configurações para ativar/desativar o Discord RPC com 1 clique.\n- ⚡ **Otimização de Inicialização & JVM**:\n  - Adicionada flag \`-noverify\` para reduzir o tempo de inicialização de 200s para ~70s.\n  - Supressão de tela branca legada no arranque.\n- 🛡️ **Correções de Compatibilidade**:\n  - Integração do Akashic-Botania-Cache-Fix e HandoffFix para carregamento 100% estável.\n\n**Baixe o instalador executável abaixo para atualizar!**`,
   draft: false,
   prerelease: false
 });

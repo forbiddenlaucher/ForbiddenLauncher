@@ -27,6 +27,7 @@ class ConfigStore {
       launchAction: 'minimize-tray', // 'minimize-tray' | 'close' | 'keep'
       ecoMode: false, // Disables particles and heavy visual effects
       closeToTray: false,
+      discordRpc: true,
       instances: {
         'forbidden-requiem': {
           maxRam: 4096,

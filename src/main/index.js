@@ -2,6 +2,7 @@ const { app, BrowserWindow, Menu, Tray, nativeImage } = require('electron');
 const path = require('path');
 const fs = require('fs');
 const configStore = require('./configStore');
+const discordRpc = require('./discordRpc');
 const { registerIpcHandlers } = require('./ipcHandlers');
 
 // Disable security warnings & optimize Chromium memory
@@ -136,6 +137,13 @@ if (!gotTheLock) {
     createTray();
     createWindow();
 
+    const isRpcEnabled = configStore.get('discordRpc') !== false;
+    const activePack = configStore.get('activePack') || 'forbidden-requiem';
+    discordRpc.init(isRpcEnabled);
+    if (isRpcEnabled) {
+      discordRpc.setLauncherIdle(activePack);
+    }
+
     app.on('activate', () => {
       if (BrowserWindow.getAllWindows().length === 0) {
         createWindow();
@@ -143,8 +151,13 @@ if (!gotTheLock) {
     });
   });
 
+  app.on('before-quit', () => {
+    discordRpc.destroy();
+  });
+
   app.on('window-all-closed', () => {
     if (process.platform !== 'darwin' && (!configStore.get('closeToTray') || app.isQuitting)) {
+      discordRpc.destroy();
       app.quit();
     }
   });

@@ -24,6 +24,7 @@ contextBridge.exposeInMainWorld('launcherAPI', {
   selectFolder: () => ipcRenderer.invoke('dialog:select-folder'),
   openInstanceFolder: (packId) => ipcRenderer.invoke('shell:open-instance-folder', packId),
   openExternal: (url) => ipcRenderer.invoke('shell:open-external', url),
+  setRpcPack: (packId) => ipcRenderer.invoke('rpc:set-pack', packId),
 
   // Launcher Updater
   checkForLauncherUpdates: () => ipcRenderer.invoke('updater:check'),

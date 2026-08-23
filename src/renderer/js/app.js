@@ -91,6 +91,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   const btnOpenFolderAtm = document.getElementById('btn-open-folder-atm');
   const btnSaveSettings = document.getElementById('btn-save-settings');
   const settingEcoMode = document.getElementById('setting-eco-mode');
+  const settingDiscordRpc = document.getElementById('setting-discord-rpc');
   const settingLaunchAction = document.getElementById('setting-launch-action');
   const settingCloseToTray = document.getElementById('setting-close-to-tray');
   const actionCardOptions = document.querySelectorAll('.action-card-option');
@@ -253,6 +254,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     updateLaunchActionUI(lAction);
     if (settingCloseToTray) {
       settingCloseToTray.checked = currentConfig.closeToTray || false;
+    }
+    if (settingDiscordRpc) {
+      settingDiscordRpc.checked = currentConfig.discordRpc !== false;
     }
     updateEcoMasterStatus();
 
@@ -706,8 +710,14 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
   }
 
-  tabBtnForbidden.onclick = () => renderModpackTab('forbidden-requiem');
-  tabBtnAtm10.onclick = () => renderModpackTab('atm10');
+  tabBtnForbidden.onclick = () => {
+    renderModpackTab('forbidden-requiem');
+    api.setRpcPack('forbidden-requiem');
+  };
+  tabBtnAtm10.onclick = () => {
+    renderModpackTab('atm10');
+    api.setRpcPack('atm10');
+  };
 
   inputSearchMods.addEventListener('input', (e) => {
     const term = e.target.value.toLowerCase().trim();
@@ -930,12 +940,14 @@ document.addEventListener('DOMContentLoaded', async () => {
   btnSaveSettings.addEventListener('click', async () => {
     const newUsername = settingUsername.value.trim() || 'ShadowSeeker';
     const isEco = settingEcoMode ? settingEcoMode.checked : false;
+    const isRpc = settingDiscordRpc ? settingDiscordRpc.checked : true;
     const lAction = settingLaunchAction ? settingLaunchAction.value : 'minimize-tray';
     const cTray = settingCloseToTray ? settingCloseToTray.checked : false;
 
     await api.saveConfig({
       username: newUsername,
       ecoMode: isEco,
+      discordRpc: isRpc,
       launchAction: lAction,
       closeToTray: cTray
     });

@@ -12,6 +12,7 @@ const gameLauncher = require('./gameLauncher');
 const serverPing = require('./serverPing');
 const microsoftAuth = require('./microsoftAuth');
 const launcherUpdater = require('./launcherUpdater');
+const discordRpc = require('./discordRpc');
 
 function registerIpcHandlers(mainWindow) {
   const sendToWindow = (channel, data) => {
@@ -26,7 +27,14 @@ function registerIpcHandlers(mainWindow) {
   });
 
   ipcMain.handle('config:save', (event, newConfig) => {
-    return configStore.saveConfig(newConfig);
+    const saved = configStore.saveConfig(newConfig);
+    if (newConfig.discordRpc !== undefined) {
+      discordRpc.setEnabled(newConfig.discordRpc);
+    }
+    if (newConfig.activePack && !gameLauncher.isRunning) {
+      discordRpc.setLauncherIdle(newConfig.activePack);
+    }
+    return saved;
   });
 
   ipcMain.handle('config:save-instance', (event, packId, instConfig) => {
@@ -155,10 +163,12 @@ function registerIpcHandlers(mainWindow) {
 
       sendToWindow('install:log', { level: 'INFO', message: `Instalação de ${packEntry.name} concluída com sucesso!` });
       sendToWindow('install:progress', { packId, phase: 'done', message: 'Pronto para Jogar!', percentage: 100 });
+      discordRpc.setLauncherIdle(packId);
       return { success: true };
     } catch (err) {
       console.error(`Erro instalando ${packId}:`, err);
       sendToWindow('install:log', { level: 'ERROR', message: `Erro ao instalar: ${err.message}` });
+      discordRpc.setLauncherIdle(packId);
       throw err;
     }
   });
@@ -171,6 +181,7 @@ function registerIpcHandlers(mainWindow) {
     const autoClose = configStore.get('autoCloseOnLaunch');
 
     try {
+      discordRpc.setGameLoading(packId, 'Iniciando Minecraft...');
       sendToWindow('game:log', { packId, level: 'INFO', message: `Iniciando preparação de execução de ${packEntry ? packEntry.name : packId}...` });
       await gameLauncher.launch(
         instConfig.gameDir,
@@ -181,11 +192,43 @@ function registerIpcHandlers(mainWindow) {
         },
         (log) => {
           sendToWindow('game:log', { packId, ...log });
+
+          const msg = log.message || '';
+          if (msg.includes('Connecting to ')) {
+            const match = msg.match(/Connecting to\s+([a-zA-Z0-9.-]+)/);
+            if (match && match[1]) {
+              const serverHost = match[1];
+              discordRpc.setInGame(packId, { serverIp: serverHost, isSingleplayer: false });
+              serverPing.ping(serverHost, 25565).then(res => {
+                if (res && res.online && res.players) {
+                  discordRpc.setInGame(packId, {
+                    serverIp: serverHost,
+                    playersOnline: res.players.online,
+                    maxPlayers: res.players.max
+                  });
+                }
+              }).catch(() => {});
+            }
+          } else if (msg.includes('Loading dimension')) {
+            let dimName = 'Overworld';
+            if (msg.includes('dimension -1')) dimName = 'Nether';
+            else if (msg.includes('dimension 1')) dimName = 'The End';
+            else if (msg.includes('dimension 7')) dimName = 'Twilight Forest';
+            else if (msg.includes('dimension 100')) dimName = 'Deep Dark';
+            else if (msg.includes('dimension 2')) dimName = 'Outer Lands';
+            else if (msg.includes('dimension 3')) dimName = 'Pocket Plane';
+            else if (msg.includes('dimension 4')) dimName = 'Aether';
+
+            discordRpc.setInGame(packId, { dimension: dimName, isSingleplayer: true });
+          } else if (msg.includes('Stopping!') || msg.includes('Stopping server')) {
+            discordRpc.setInGame(packId, { serverIp: null, dimension: null });
+          }
         },
         (status) => {
           sendToWindow('game:status', { packId, status });
           const launchAction = configStore.get('launchAction') || 'minimize-tray';
           if (status === 'running') {
+            discordRpc.setInGame(packId, { isSingleplayer: true, dimension: 'Overworld' });
             if (launchAction === 'close') {
               const { app } = require('electron');
               app.isQuitting = true;
@@ -200,6 +243,7 @@ function registerIpcHandlers(mainWindow) {
               }
             }
           } else if (status === 'idle') {
+            discordRpc.setLauncherIdle(configStore.get('activePack') || packId);
             if (launchAction === 'minimize-tray' || launchAction === 'minimize') {
               if (mainWindow && !mainWindow.isDestroyed()) {
                 mainWindow.show();
@@ -211,6 +255,7 @@ function registerIpcHandlers(mainWindow) {
       );
       return { success: true };
     } catch (err) {
+      discordRpc.setLauncherIdle(packId);
       sendToWindow('game:log', { packId, level: 'ERROR', message: `Falha ao iniciar ${packEntry ? packEntry.name : packId}: ${err.message}` });
       dialog.showErrorBox('Erro ao Iniciar o Jogo', `Não foi possível iniciar ${packEntry ? packEntry.name : packId}:\n\n${err.message}\n\nAbra a aba REGISTROS para visualizar os detalhes.`);
       throw err;
@@ -309,6 +354,14 @@ function registerIpcHandlers(mainWindow) {
       fs.mkdirSync(instConfig.gameDir, { recursive: true });
     }
     shell.openPath(instConfig.gameDir);
+  });
+
+  // 9. Discord RPC controls
+  ipcMain.handle('rpc:set-pack', (event, packId) => {
+    if (!gameLauncher.isRunning) {
+      discordRpc.setLauncherIdle(packId);
+    }
+    return { success: true };
   });
 
   // 8. Window Controls
