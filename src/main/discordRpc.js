@@ -11,7 +11,7 @@ const OPCODES = {
   PONG: 4
 };
 
-const DEFAULT_CLIENT_ID = '383226320970055681';
+const DEFAULT_CLIENT_ID = '1541166175218831501';
 const DISCORD_INVITE_URL = 'https://discord.gg/eS8sxZESW';
 const LOGO_URL = 'https://raw.githubusercontent.com/forbiddenlaucher/ForbiddenLauncher/master/src/renderer/assets/icon.png';
 const ATM_LOGO_URL = 'https://raw.githubusercontent.com/forbiddenlaucher/ForbiddenLauncher/master/src/renderer/assets/atm10_banner.png';

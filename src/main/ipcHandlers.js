@@ -199,19 +199,20 @@ function registerIpcHandlers(mainWindow) {
           const msg = log.message || '';
           if (msg.includes('Connecting to ')) {
             const match = msg.match(/Connecting to\s+([a-zA-Z0-9.-]+)/);
-            if (match && match[1]) {
-              const serverHost = match[1];
-              discordRpc.setInGame(packId, { serverIp: serverHost, isSingleplayer: false });
-              serverPing.ping(serverHost, 25565).then(res => {
-                if (res && res.online && res.players) {
-                  discordRpc.setInGame(packId, {
-                    serverIp: serverHost,
-                    playersOnline: res.players.online,
-                    maxPlayers: res.players.max
-                  });
-                }
-              }).catch(() => {});
+            let serverHost = match && match[1] ? match[1] : (instConfig.serverHost || 'play.forbiddenrequiem.com');
+            if (serverHost === 'server' || serverHost === 'localhost' || serverHost === '127.0.0.1') {
+              serverHost = instConfig.serverHost || (packId === 'atm10' ? 'allthemods.com.br' : 'play.forbiddenrequiem.com');
             }
+            discordRpc.setInGame(packId, { serverIp: serverHost, isSingleplayer: false });
+            serverPing.ping(serverHost, 25565).then(res => {
+              if (res && res.online && res.players) {
+                discordRpc.setInGame(packId, {
+                  serverIp: serverHost,
+                  playersOnline: res.players.online,
+                  maxPlayers: res.players.max
+                });
+              }
+            }).catch(() => {});
           } else if (msg.includes('Loading dimension')) {
             let dimName = 'Overworld';
             if (msg.includes('dimension -1')) dimName = 'Nether';
