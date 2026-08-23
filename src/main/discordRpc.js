@@ -227,9 +227,10 @@ class DiscordRpc extends EventEmitter {
     this.gameStartTime = null;
     this.inGameData = null;
     const meta = this._getPackMeta(packId);
+    const isFr = packId === 'forbidden-requiem';
     const activity = {
-      details: '🏰 Forbidden Launcher',
-      state: 'Visualizando ' + meta.name,
+      details: isFr ? '🏰 Explorando Forbidden Requiem' : '🌌 Explorando All The Mods 10',
+      state: '📖 Grimório • ' + meta.name + ' (' + meta.version + ')',
       assets: {
         large_image: meta.largeImage,
         large_text: meta.largeText,
@@ -272,7 +273,7 @@ class DiscordRpc extends EventEmitter {
     }
     const meta = this._getPackMeta(packId);
     const activity = {
-      details: '⚡ Iniciando ' + meta.name,
+      details: '⚡ Inicializando ' + meta.name,
       state: stage || 'Carregando modificações...',
       timestamps: {
         start: this.gameStartTime
@@ -281,7 +282,7 @@ class DiscordRpc extends EventEmitter {
         large_image: meta.largeImage,
         large_text: meta.largeText,
         small_image: LOGO_URL,
-        small_text: 'Inicializando...'
+        small_text: 'Carregando mods...'
       },
       buttons: [
         { label: 'Comunidade Discord', url: DISCORD_INVITE_URL },
@@ -297,7 +298,9 @@ class DiscordRpc extends EventEmitter {
       this.gameStartTime = Math.floor(Date.now() / 1000);
     }
     const meta = this._getPackMeta(packId);
-    if (options.isSingleplayer) {
+    if (options.inMenu) {
+      this.inGameData = { inMenu: true };
+    } else if (options.isSingleplayer) {
       this.inGameData = { isSingleplayer: true, dimension: options.dimension || 'Overworld', ...options };
       delete this.inGameData.serverIp;
     } else if (options.serverIp) {
@@ -308,8 +311,9 @@ class DiscordRpc extends EventEmitter {
     }
 
     let details = '⚔️ ' + meta.name + ' (' + meta.version + ')';
-    let state = 'No Menu Principal';
+    let state = '🏠 No Menu Principal';
     let party = undefined;
+
     if (this.inGameData.serverIp) {
       state = '🌐 ' + this.inGameData.serverIp;
       if (this.inGameData.playersOnline !== undefined && this.inGameData.maxPlayers) {
@@ -320,7 +324,20 @@ class DiscordRpc extends EventEmitter {
       }
     } else if (this.inGameData.isSingleplayer) {
       const dim = this.inGameData.dimension || 'Overworld';
-      state = '🌲 Modo Solo • ' + dim;
+      let dimIcon = '🌲';
+      if (dim === 'Nether') dimIcon = '🔥';
+      else if (dim === 'The End') dimIcon = '🌌';
+      else if (dim === 'Twilight Forest') dimIcon = '🦌';
+      else if (dim === 'Deep Dark') dimIcon = '🌑';
+      else if (dim === 'Outer Lands') dimIcon = '👁️';
+      else if (dim === 'Pocket Plane') dimIcon = '🚪';
+      else if (dim === 'Aether') dimIcon = '☁️';
+      else if (dim.includes('The Other')) dimIcon = '⚡';
+      else if (dim.includes('Mineração') || dim.includes('Mining')) dimIcon = '⛏️';
+      else if (dim.includes('Lua') || dim.includes('Moon')) dimIcon = '🌕';
+      else if (dim.includes('Marte') || dim.includes('Mars')) dimIcon = '🪐';
+
+      state = dimIcon + ' Modo Solo • ' + dim;
     } else if (this.inGameData.dimension) {
       state = '🗺️ Explorando: ' + this.inGameData.dimension;
     }

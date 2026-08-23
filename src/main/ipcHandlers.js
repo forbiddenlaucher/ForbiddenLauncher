@@ -197,7 +197,18 @@ function registerIpcHandlers(mainWindow) {
           sendToWindow('game:log', { packId, ...log });
 
           const msg = log.message || '';
-          if (msg.includes('Connecting to ')) {
+          // 1. Loading stages
+          if (msg.includes('Searching for mods') || msg.includes('Constructing mods')) {
+            discordRpc.setGameLoading(packId, 'Construindo modificações...');
+          } else if (msg.includes('Pre-initializing') || msg.includes('PreInitialization')) {
+            discordRpc.setGameLoading(packId, 'Pré-inicializando mods...');
+          } else if (msg.includes('Initializing') || msg.includes('Initialization')) {
+            discordRpc.setGameLoading(packId, 'Inicializando sistemas...');
+          } else if (msg.includes('Post-initializing') || msg.includes('PostInitialization')) {
+            discordRpc.setGameLoading(packId, 'Carregando receitas e registros...');
+          }
+          // 2. Server connection
+          else if (msg.includes('Connecting to ')) {
             const match = msg.match(/Connecting to\s+([a-zA-Z0-9.-]+)/);
             let serverHost = match && match[1] ? match[1] : (instConfig.serverHost || 'play.forbiddenrequiem.com');
             if (serverHost === 'server' || serverHost === 'localhost' || serverHost === '127.0.0.1') {
@@ -213,19 +224,31 @@ function registerIpcHandlers(mainWindow) {
                 });
               }
             }).catch(() => {});
-          } else if (msg.includes('Loading dimension')) {
-            let dimName = 'Overworld';
-            if (msg.includes('dimension -1')) dimName = 'Nether';
-            else if (msg.includes('dimension 1')) dimName = 'The End';
-            else if (msg.includes('dimension 7')) dimName = 'Twilight Forest';
-            else if (msg.includes('dimension 100')) dimName = 'Deep Dark';
-            else if (msg.includes('dimension 2')) dimName = 'Outer Lands';
-            else if (msg.includes('dimension 3')) dimName = 'Pocket Plane';
-            else if (msg.includes('dimension 4')) dimName = 'Aether';
+          }
+          // 3. Dimension detection (1.7.10 & modern)
+          else if (msg.includes('Loading dimension') || msg.includes('dimension') || msg.includes('Teleporting to dimension')) {
+            let dimName = null;
+            if (msg.includes('dimension -1') || msg.includes('the_nether')) dimName = 'Nether';
+            else if (msg.includes('dimension 1') || msg.includes('the_end')) dimName = 'The End';
+            else if (msg.includes('dimension 7') || msg.includes('twilightforest')) dimName = 'Twilight Forest';
+            else if (msg.includes('dimension 100') || msg.includes('deepdark')) dimName = 'Deep Dark';
+            else if (msg.includes('dimension 2') || msg.includes('outerlands')) dimName = 'Outer Lands';
+            else if (msg.includes('dimension 3') || msg.includes('pocketplane')) dimName = 'Pocket Plane';
+            else if (msg.includes('dimension 4') || msg.includes('aether')) dimName = 'Aether';
+            else if (msg.includes('the_other')) dimName = 'The Other';
+            else if (msg.includes('mining')) dimName = 'Mineração';
+            else if (msg.includes('the_void')) dimName = 'The Void';
+            else if (msg.includes('ad_astra:moon')) dimName = 'A Lua';
+            else if (msg.includes('ad_astra:mars')) dimName = 'Marte';
+            else if (msg.includes('dimension 0') || msg.includes('overworld')) dimName = 'Overworld';
 
-            discordRpc.setInGame(packId, { dimension: dimName, isSingleplayer: true });
-          } else if (msg.includes('Stopping!') || msg.includes('Stopping server')) {
-            discordRpc.setInGame(packId, { serverIp: null, dimension: null });
+            if (dimName) {
+              discordRpc.setInGame(packId, { dimension: dimName, isSingleplayer: true });
+            }
+          }
+          // 4. Menu & exit transitions
+          else if (msg.includes('Stopping integrated server') || msg.includes('Stopping server') || msg.includes('Disconnected') || msg.includes('Stopping!')) {
+            discordRpc.setInGame(packId, { inMenu: true });
           }
         },
         (status) => {
