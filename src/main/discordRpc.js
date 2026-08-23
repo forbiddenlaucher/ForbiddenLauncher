@@ -11,8 +11,10 @@ const OPCODES = {
   PONG: 4
 };
 
-const DEFAULT_CLIENT_ID = '1342674390022295624';
+const DEFAULT_CLIENT_ID = '383226320970055681';
 const DISCORD_INVITE_URL = 'https://discord.gg/eS8sxZESW';
+const LOGO_URL = 'https://raw.githubusercontent.com/forbiddenlaucher/ForbiddenLauncher/master/src/renderer/assets/icon.png';
+const ATM_LOGO_URL = 'https://raw.githubusercontent.com/forbiddenlaucher/ForbiddenLauncher/master/src/renderer/assets/atm10_banner.png';
 
 class DiscordRpc extends EventEmitter {
   constructor(options = {}) {
@@ -186,9 +188,9 @@ class DiscordRpc extends EventEmitter {
         name: 'All The Mods 10',
         version: '1.21.1',
         loader: 'NeoForge',
-        largeImage: 'atm10',
+        largeImage: ATM_LOGO_URL,
         largeText: 'All The Mods 10 (1.21.1)',
-        smallImage: 'neoforge',
+        smallImage: LOGO_URL,
         smallText: 'NeoForge 1.21.1',
         button2Label: 'ATM 10 Servidor',
         defaultServer: 'allthemods.com.br'
@@ -198,9 +200,9 @@ class DiscordRpc extends EventEmitter {
       name: 'Forbidden Requiem',
       version: '1.7.10',
       loader: 'Forge',
-      largeImage: 'forbidden',
+      largeImage: LOGO_URL,
       largeText: 'Forbidden Requiem (1.7.10)',
-      smallImage: 'logo',
+      smallImage: LOGO_URL,
       smallText: 'Minecraft 1.7.10',
       button2Label: '1.7.10 Servidor',
       defaultServer: 'play.forbiddenrequiem.com'
