@@ -92,6 +92,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   const btnSaveSettings = document.getElementById('btn-save-settings');
   const settingEcoMode = document.getElementById('setting-eco-mode');
   const settingDiscordRpc = document.getElementById('setting-discord-rpc');
+  const settingDiscordClientId = document.getElementById('setting-discord-client-id');
   const settingLaunchAction = document.getElementById('setting-launch-action');
   const settingCloseToTray = document.getElementById('setting-close-to-tray');
   const actionCardOptions = document.querySelectorAll('.action-card-option');
@@ -257,6 +258,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
     if (settingDiscordRpc) {
       settingDiscordRpc.checked = currentConfig.discordRpc !== false;
+    }
+    if (settingDiscordClientId) {
+      settingDiscordClientId.value = currentConfig.discordClientId || '';
     }
     updateEcoMasterStatus();
 
@@ -941,6 +945,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const newUsername = settingUsername.value.trim() || 'ShadowSeeker';
     const isEco = settingEcoMode ? settingEcoMode.checked : false;
     const isRpc = settingDiscordRpc ? settingDiscordRpc.checked : true;
+    const dClientId = settingDiscordClientId ? settingDiscordClientId.value.trim() : '';
     const lAction = settingLaunchAction ? settingLaunchAction.value : 'minimize-tray';
     const cTray = settingCloseToTray ? settingCloseToTray.checked : false;
 
@@ -948,6 +953,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       username: newUsername,
       ecoMode: isEco,
       discordRpc: isRpc,
+      discordClientId: dClientId,
       launchAction: lAction,
       closeToTray: cTray
     });

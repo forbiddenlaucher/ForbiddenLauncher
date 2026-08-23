@@ -28,6 +28,7 @@ class ConfigStore {
       ecoMode: false, // Disables particles and heavy visual effects
       closeToTray: false,
       discordRpc: true,
+      discordClientId: '',
       instances: {
         'forbidden-requiem': {
           maxRam: 4096,

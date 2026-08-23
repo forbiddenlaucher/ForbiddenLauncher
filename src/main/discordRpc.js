@@ -182,6 +182,17 @@ class DiscordRpc extends EventEmitter {
     this._sendPacket(OPCODES.FRAME, JSON.stringify(packet));
   }
 
+  setClientId(clientId) {
+    const newId = (clientId && clientId.trim()) ? clientId.trim() : DEFAULT_CLIENT_ID;
+    if (this.clientId !== newId) {
+      this.clientId = newId;
+      if (this.connected) {
+        this.disconnect();
+        this.connect();
+      }
+    }
+  }
+
   _getPackMeta(packId) {
     if (packId === 'atm10') {
       return {
@@ -189,10 +200,11 @@ class DiscordRpc extends EventEmitter {
         version: '1.21.1',
         loader: 'NeoForge',
         largeImage: ATM_LOGO_URL,
-        largeText: 'All The Mods 10 (1.21.1)',
+        largeText: 'All The Mods 10 • NeoForge 1.21.1',
         smallImage: LOGO_URL,
-        smallText: 'NeoForge 1.21.1',
-        button2Label: 'ATM 10 Servidor',
+        smallText: 'ATM 10 Universe',
+        button1Label: 'Comunidade Discord',
+        button2Label: 'Servidor ATM 10',
         defaultServer: 'allthemods.com.br'
       };
     }
@@ -201,10 +213,11 @@ class DiscordRpc extends EventEmitter {
       version: '1.7.10',
       loader: 'Forge',
       largeImage: LOGO_URL,
-      largeText: 'Forbidden Requiem (1.7.10)',
+      largeText: 'Forbidden Requiem 1.7.10 • Dark Fantasy RPG',
       smallImage: LOGO_URL,
-      smallText: 'Minecraft 1.7.10',
-      button2Label: '1.7.10 Servidor',
+      smallText: 'Forge 1.7.10',
+      button1Label: 'Comunidade Discord',
+      button2Label: 'Servidor 1.7.10',
       defaultServer: 'play.forbiddenrequiem.com'
     };
   }
@@ -215,17 +228,17 @@ class DiscordRpc extends EventEmitter {
     this.inGameData = null;
     const meta = this._getPackMeta(packId);
     const activity = {
-      details: 'No Launcher Universal',
+      details: '🏰 Forbidden Launcher',
       state: 'Visualizando ' + meta.name,
       assets: {
         large_image: meta.largeImage,
-        large_text: meta.name + ' • ' + meta.version,
-        small_image: 'compass',
+        large_text: meta.largeText,
+        small_image: LOGO_URL,
         small_text: 'Forbidden Launcher'
       },
       buttons: [
-        { label: 'Discord', url: DISCORD_INVITE_URL },
-        { label: meta.button2Label, url: DISCORD_INVITE_URL }
+        { label: 'Comunidade Discord', url: DISCORD_INVITE_URL },
+        { label: 'Baixar Launcher', url: 'https://github.com/forbiddenlaucher/ForbiddenLauncher/releases' }
       ]
     };
     this._sendActivity(activity);
@@ -237,16 +250,16 @@ class DiscordRpc extends EventEmitter {
     const pct = Math.min(100, Math.max(0, Math.round(progress)));
     const stateStr = speed ? 'Baixando mods (' + pct + '% • ' + speed + ')' : 'Instalando arquivos (' + pct + '%)';
     const activity = {
-      details: 'Instalando ' + meta.name,
+      details: '📦 Instalando ' + meta.name,
       state: stateStr,
       assets: {
         large_image: meta.largeImage,
         large_text: meta.name + ' (' + meta.version + ')',
-        small_image: 'download',
+        small_image: LOGO_URL,
         small_text: pct + '% Concluído'
       },
       buttons: [
-        { label: 'Discord', url: DISCORD_INVITE_URL }
+        { label: 'Comunidade Discord', url: DISCORD_INVITE_URL }
       ]
     };
     this._sendActivity(activity);
@@ -259,7 +272,7 @@ class DiscordRpc extends EventEmitter {
     }
     const meta = this._getPackMeta(packId);
     const activity = {
-      details: 'Iniciando ' + meta.name + ' (' + meta.version + ')',
+      details: '⚡ Iniciando ' + meta.name,
       state: stage || 'Carregando modificações...',
       timestamps: {
         start: this.gameStartTime
@@ -267,11 +280,11 @@ class DiscordRpc extends EventEmitter {
       assets: {
         large_image: meta.largeImage,
         large_text: meta.largeText,
-        small_image: 'loading',
+        small_image: LOGO_URL,
         small_text: 'Inicializando...'
       },
       buttons: [
-        { label: 'Discord', url: DISCORD_INVITE_URL },
+        { label: 'Comunidade Discord', url: DISCORD_INVITE_URL },
         { label: meta.button2Label, url: DISCORD_INVITE_URL }
       ]
     };
@@ -294,22 +307,22 @@ class DiscordRpc extends EventEmitter {
       this.inGameData = { ...(this.inGameData || {}), ...options };
     }
 
-    let details = 'Jogando ' + meta.name + ' (' + meta.version + ')';
+    let details = '⚔️ ' + meta.name + ' (' + meta.version + ')';
     let state = 'No Menu Principal';
     let party = undefined;
     if (this.inGameData.serverIp) {
-      state = 'Servidor: ' + this.inGameData.serverIp;
+      state = '🌐 ' + this.inGameData.serverIp;
       if (this.inGameData.playersOnline !== undefined && this.inGameData.maxPlayers) {
-        state = 'Servidor: ' + this.inGameData.serverIp + ' (' + this.inGameData.playersOnline + '/' + this.inGameData.maxPlayers + ')';
         party = {
+          id: 'srv_' + packId,
           size: [this.inGameData.playersOnline, this.inGameData.maxPlayers]
         };
       }
     } else if (this.inGameData.isSingleplayer) {
       const dim = this.inGameData.dimension || 'Overworld';
-      state = 'Modo Solo • ' + dim;
+      state = '🌲 Modo Solo • ' + dim;
     } else if (this.inGameData.dimension) {
-      state = 'Explorando: ' + this.inGameData.dimension;
+      state = '🗺️ Explorando: ' + this.inGameData.dimension;
     }
 
     const activity = {
@@ -326,8 +339,8 @@ class DiscordRpc extends EventEmitter {
       },
       party: party,
       buttons: [
-        { label: 'Discord', url: DISCORD_INVITE_URL },
-        { label: meta.button2Label, url: DISCORD_INVITE_URL }
+        { label: meta.button1Label || 'Comunidade Discord', url: DISCORD_INVITE_URL },
+        { label: meta.button2Label || 'Conectar ao Servidor', url: DISCORD_INVITE_URL }
       ]
     };
     this._sendActivity(activity);
@@ -348,7 +361,6 @@ class DiscordRpc extends EventEmitter {
     };
     this._sendPacket(OPCODES.FRAME, JSON.stringify(packet));
   }
-
 
   destroy() {
     this.clearActivity();

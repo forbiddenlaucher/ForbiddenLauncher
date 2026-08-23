@@ -31,6 +31,9 @@ function registerIpcHandlers(mainWindow) {
     if (newConfig.discordRpc !== undefined) {
       discordRpc.setEnabled(newConfig.discordRpc);
     }
+    if (newConfig.discordClientId !== undefined) {
+      discordRpc.setClientId(newConfig.discordClientId);
+    }
     if (newConfig.activePack && !gameLauncher.isRunning) {
       discordRpc.setLauncherIdle(newConfig.activePack);
     }

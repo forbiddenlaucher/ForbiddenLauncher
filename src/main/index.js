@@ -138,7 +138,11 @@ if (!gotTheLock) {
     createWindow();
 
     const isRpcEnabled = configStore.get('discordRpc') !== false;
+    const customClientId = configStore.get('discordClientId');
     const activePack = configStore.get('activePack') || 'forbidden-requiem';
+    if (customClientId) {
+      discordRpc.setClientId(customClientId);
+    }
     discordRpc.init(isRpcEnabled);
     if (isRpcEnabled) {
       discordRpc.setLauncherIdle(activePack);
