@@ -951,6 +951,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     await api.saveConfig({
       username: newUsername,
+      activePack: 'forbidden-requiem',
       ecoMode: isEco,
       discordRpc: isRpc,
       discordClientId: dClientId,
