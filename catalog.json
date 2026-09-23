@@ -8,9 +8,9 @@
       "minecraftVersion": "1.7.10",
       "loader": "forge",
       "loaderVersion": "10.13.4.1614",
-      "latestVersion": "1.0.0",
-      "totalModsCount": 84,
-      "estimatedSizeMb": 850,
+      "latestVersion": "2.8.0",
+      "totalModsCount": 177,
+      "estimatedSizeMb": 580,
       "tagline": "Comece sua jornada em uma terra de dark fantasy, com os grandes mods da era de ouro do Minecraft 1.7.10.",
       "theme": "dark-fantasy",
       "javaMajorVersion": 8,
@@ -24,6 +24,7 @@
         "port": 25565
       },
       "manifestUrl": "https://raw.githubusercontent.com/forbiddenlaucher/ForbiddenLauncher/master/forbidden-requiem-manifest.json",
+      "downloadUrl": "https://github.com/Akashiic/Technic-Forbidden/releases/download/TEOF-2.8/TEOF-2.8.zip",
       "featuredMods": [
         { "name": "Thaumcraft 4", "category": "Magia Oculta", "description": "Manipule o Vis e desvende os mistérios proibidos da taumaturgia e do vazio." },
         { "name": "Blood Magic", "category": "Alquimia de Sangue", "description": "Sacrifique essência vital em altares de sangue para canalizar magias colossais." },
