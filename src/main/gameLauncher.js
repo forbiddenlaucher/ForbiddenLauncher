@@ -100,11 +100,20 @@ class GameLauncher {
       for (const j of allJars) jars.add(path.normalize(j));
     }
 
+    const modpackJar = path.join(gameDir, 'bin', 'modpack.jar');
+    if (fs.existsSync(modpackJar)) {
+      jars.add(path.normalize(modpackJar));
+    }
+
     const normalizedModuleJars = new Set(moduleJars.map(j => path.normalize(j).toLowerCase()));
     const finalJars = [];
     for (const j of jars) {
       const norm = path.normalize(j);
       const lower = norm.toLowerCase();
+      // Filter out conflicting Guava 15.0 (Forge 1.7.10 requires Guava 17.0 methods like CharSource.readLines)
+      if (lower.includes('guava-15.0') || lower.endsWith('guava-15.0.jar')) {
+        continue;
+      }
       // Filter out duplicate or conflicting module jars
       if (!normalizedModuleJars.has(lower) && !lower.includes('asm-9.3') && !lower.endsWith('asm-9.3.jar')) {
         finalJars.push(norm);
@@ -393,13 +402,19 @@ class GameLauncher {
         '--assetIndex', assetIndexName,
         '--uuid', finalUuid,
         '--accessToken', finalAccessToken,
+        '--userProperties', '{}',
         '--userType', userType,
         '--versionType', 'release'
       );
     }
 
-    if (mcVersion === '1.7.10' && !gameArguments.includes('--tweakClass')) {
-      gameArguments.push('--tweakClass', 'cpw.mods.fml.common.launcher.FMLTweaker');
+    if (mcVersion === '1.7.10') {
+      if (!gameArguments.includes('--tweakClass')) {
+        gameArguments.push('--tweakClass', 'cpw.mods.fml.common.launcher.FMLTweaker');
+      }
+      if (!gameArguments.includes('--userProperties')) {
+        gameArguments.push('--userProperties', '{}');
+      }
     }
 
     if (fullscreen) {
