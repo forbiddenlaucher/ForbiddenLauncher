@@ -2,7 +2,8 @@
   "schemaVersion": 1,
   "id": "forbidden-requiem",
   "name": "Forbidden Requiem",
-  "version": "1.0.0",
+  "version": "2.8.0",
+  "downloadUrl": "https://github.com/Akashiic/Technic-Forbidden/releases/download/TEOF-2.8/TEOF-2.8.zip",
   "minecraft": {
     "version": "1.7.10",
     "loader": {
