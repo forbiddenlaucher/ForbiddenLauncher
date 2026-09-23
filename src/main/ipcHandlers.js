@@ -257,9 +257,16 @@ function registerIpcHandlers(mainWindow) {
           if (status === 'running') {
             discordRpc.setInGame(packId, { isSingleplayer: true, dimension: 'Overworld' });
             if (launchAction === 'close') {
-              const { app } = require('electron');
-              app.isQuitting = true;
-              app.quit();
+              if (mainWindow && !mainWindow.isDestroyed()) {
+                mainWindow.hide();
+              }
+              setTimeout(() => {
+                if (gameLauncher.isRunning) {
+                  const { app } = require('electron');
+                  app.isQuitting = true;
+                  app.quit();
+                }
+              }, 10000);
             } else if (launchAction === 'minimize-tray') {
               if (mainWindow && !mainWindow.isDestroyed()) {
                 mainWindow.hide();
@@ -271,11 +278,9 @@ function registerIpcHandlers(mainWindow) {
             }
           } else if (status === 'idle') {
             discordRpc.setLauncherIdle(configStore.get('activePack') || packId);
-            if (launchAction === 'minimize-tray' || launchAction === 'minimize') {
-              if (mainWindow && !mainWindow.isDestroyed()) {
-                mainWindow.show();
-                mainWindow.focus();
-              }
+            if (mainWindow && !mainWindow.isDestroyed()) {
+              mainWindow.show();
+              mainWindow.focus();
             }
           }
         }
